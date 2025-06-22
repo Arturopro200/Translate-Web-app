@@ -262,7 +262,7 @@ const confirmClearBtn = document.getElementById('confirmClearBtn');
 // Settings Elements
 const settingsBtn = document.getElementById('settingsBtn');
 const settingsPanel = document.getElementById('settingsPanel');
-const themeToggle = document.getElementById('theme-toggle');
+const themeToggleBtn = document.getElementById('theme-toggle-btn');
 const voiceSpeedRadios = document.querySelectorAll('input[name="voiceSpeed"]');
 const customSpeedSlider = document.getElementById('customSpeedSlider');
 const customSpeedValue = document.getElementById('customSpeedValue');
@@ -333,7 +333,7 @@ function setupEventListeners() {
     });
 
     // Theme Toggle
-    themeToggle.addEventListener('change', toggleTheme);
+    themeToggleBtn.addEventListener('click', toggleTheme);
 
     // Voice Speed
     voiceSpeedRadios.forEach(radio => {
@@ -647,7 +647,6 @@ function loadSettings() {
     const savedTheme = localStorage.getItem('theme') || 'light';
     if (savedTheme === 'dark') {
         document.body.classList.add('dark-mode');
-        themeToggle.checked = true;
     }
 
     // Load Voice Speed
@@ -674,11 +673,10 @@ function loadSettings() {
 }
 
 function toggleTheme() {
-    if (themeToggle.checked) {
-        document.body.classList.add('dark-mode');
+    document.body.classList.toggle('dark-mode');
+    if (document.body.classList.contains('dark-mode')) {
         localStorage.setItem('theme', 'dark');
     } else {
-        document.body.classList.remove('dark-mode');
         localStorage.setItem('theme', 'light');
     }
 }
