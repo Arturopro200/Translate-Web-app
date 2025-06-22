@@ -315,13 +315,69 @@ footer p {
     to { transform: rotate(360deg); }
 }
 
+/* Responsive Design */
 @media (max-width: 768px) {
-    .container { padding: 20px 15px; }
-    header h1 { font-size: 2.2rem; }
-    .translate-container { padding: 20px; }
-    .translation-area { grid-template-columns: 1fr; gap: 20px; }
-    .language-selector { flex-direction: column; }
-    .swap-btn { transform: rotate(90deg); }
+    .container {
+        padding: 30px 20px;
+    }
+    header h1 {
+        font-size: 2.4rem;
+    }
+    .translate-container {
+        padding: 25px;
+    }
+    .translation-area {
+        grid-template-columns: 1fr;
+        gap: 25px;
+    }
+    .language-selector {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    .swap-btn {
+        transform: rotate(90deg);
+    }
+    .swap-btn:hover {
+        transform: rotate(90deg) scale(1.1);
+    }
+    .modal-content {
+        margin: 20% auto;
+        width: 90%;
+        padding: 30px;
+    }
+}
+
+/* For smaller mobile devices */
+@media (max-width: 480px) {
+    :root {
+        font-size: 15px; /* Adjust base font for smaller screens */
+    }
+    .container {
+        padding: 20px 15px;
+    }
+    header h1 {
+        font-size: 2.2rem;
+    }
+    header p {
+        font-size: 1.1rem;
+    }
+    .text-area-container textarea {
+        min-height: 200px;
+    }
+    .translate-btn {
+        width: 100%;
+        padding: 16px;
+    }
+    .history-item {
+        padding: 15px;
+    }
+    .modal-content {
+        padding: 25px;
+        margin: 15% auto;
+    }
+    .modal-content h2 {
+        font-size: 1.6rem;
+    }
 }
 
 .history-list::-webkit-scrollbar { width: 6px; }
