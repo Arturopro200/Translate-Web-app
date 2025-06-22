@@ -253,6 +253,12 @@ const aboutModal = document.getElementById('aboutModal');
 const closeModalSpan = document.querySelector('.close-modal-span');
 const closeModalBtn = document.getElementById('closeModalBtn');
 
+// Confirmation Modal Elements
+const confirmModal = document.getElementById('confirmModal');
+const closeConfirmModal = document.getElementById('closeConfirmModal');
+const cancelClearBtn = document.getElementById('cancelClearBtn');
+const confirmClearBtn = document.getElementById('confirmClearBtn');
+
 // Translation history
 let history = JSON.parse(localStorage.getItem('translationHistory')) || [];
 
@@ -260,6 +266,7 @@ let history = JSON.parse(localStorage.getItem('translationHistory')) || [];
 function init() {
     loadHistory();
     setupEventListeners();
+    updateCharCounter(); // Set initial counter value
 }
 
 // Setup event listeners
@@ -275,15 +282,23 @@ function setupEventListeners() {
     sourceText.addEventListener('input', updateCharCounter);
 
     // Clear History
-    clearHistoryBtn.addEventListener('click', clearHistory);
+    clearHistoryBtn.addEventListener('click', () => {
+        confirmModal.style.display = 'block';
+    });
 
+    // Confirmation Modal Events
+    closeConfirmModal.addEventListener('click', () => confirmModal.style.display = 'none');
+    cancelClearBtn.addEventListener('click', () => confirmModal.style.display = 'none');
+    confirmClearBtn.addEventListener('click', executeClearHistory);
+    
     // Modal events
     aboutBtn.addEventListener('click', openModal);
     closeModalSpan.addEventListener('click', closeModal);
     closeModalBtn.addEventListener('click', closeModal);
     window.addEventListener('click', (event) => {
-        if (event.target == aboutModal) {
+        if (event.target == aboutModal || event.target == confirmModal) {
             closeModal();
+            confirmModal.style.display = 'none';
         }
     });
 
@@ -511,12 +526,33 @@ function updateCharCounter() {
 }
 
 // Clear history
-function clearHistory() {
-    if (confirm('Are you sure you want to clear all translation history?')) {
-        history = [];
-        localStorage.removeItem('translationHistory');
-        loadHistory();
-    }
+function executeClearHistory() {
+    history = [];
+    localStorage.removeItem('translationHistory');
+    loadHistory();
+    confirmModal.style.display = 'none';
+    showToastNotification('History cleared successfully!');
+}
+
+// Show Toast Notification
+function showToastNotification(message) {
+    const notification = document.createElement('div');
+    notification.className = 'toast-notification';
+    notification.textContent = message;
+    document.body.appendChild(notification);
+
+    // Show notification
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 100);
+
+    // Hide and remove notification after 3 seconds
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 500); // Wait for fade out animation
+    }, 3000);
 }
 
 // Initialize the app when DOM is loaded

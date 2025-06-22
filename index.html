@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Translate Web App - English ↔ Sinhala</title>
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;500;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
@@ -41,8 +43,8 @@
             <div class="translation-area">
                 <div class="input-section">
                     <div class="text-area-container">
-                        <textarea id="sourceText" placeholder="Enter text to translate..." rows="8" maxlength="1000"></textarea>
-                        <div id="charCounter" class="char-counter">0 / 1000</div>
+                        <textarea id="sourceText" placeholder="Enter text to translate..." rows="8" maxlength="10000"></textarea>
+                        <div id="charCounter" class="char-counter">0 / 10000</div>
                         <div class="text-controls">
                             <button id="clearSource" class="clear-btn" title="Clear Text">
                                 <i class="fas fa-times"></i>
@@ -110,6 +112,19 @@
                 <li>Auto-translation & Instant Swap</li>
             </ul>
             <button id="closeModalBtn" class="modal-close-button">Close</button>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal for Clearing History -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content">
+            <span id="closeConfirmModal" class="close-modal-span">&times;</span>
+            <h3>Confirm Action</h3>
+            <p>Are you sure you want to clear all translation history? This action cannot be undone.</p>
+            <div class="modal-buttons">
+                <button id="cancelClearBtn" class="modal-button-secondary">Cancel</button>
+                <button id="confirmClearBtn" class="modal-button-danger">Yes, Clear</button>
+            </div>
         </div>
     </div>
 
