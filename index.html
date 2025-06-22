@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Translate Web App - English ↔ Sinhala</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-language"></i> Translate Web App</h1>
+            <p>English ↔ Sinhala Translation</p>
+        </header>
+
+        <main class="translate-container">
+            <div class="language-selector">
+                <div class="language-box">
+                    <label for="sourceLanguage">From:</label>
+                    <select id="sourceLanguage">
+                        <option value="en">English</option>
+                        <option value="si">සිංහල</option>
+                    </select>
+                </div>
+                
+                <button id="swapLanguages" class="swap-btn">
+                    <i class="fas fa-exchange-alt"></i>
+                </button>
+                
+                <div class="language-box">
+                    <label for="targetLanguage">To:</label>
+                    <select id="targetLanguage">
+                        <option value="si">සිංහල</option>
+                        <option value="en">English</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="translation-area">
+                <div class="input-section">
+                    <div class="text-area-container">
+                        <textarea id="sourceText" placeholder="Enter text to translate..." rows="8"></textarea>
+                        <div class="text-controls">
+                            <button id="clearSource" class="clear-btn">
+                                <i class="fas fa-times"></i>
+                            </button>
+                            <button id="speakSource" class="speak-btn">
+                                <i class="fas fa-volume-up"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="output-section">
+                    <div class="text-area-container">
+                        <textarea id="targetText" placeholder="Translation will appear here..." rows="8" readonly></textarea>
+                        <div class="text-controls">
+                            <button id="copyTranslation" class="copy-btn">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                            <button id="speakTarget" class="speak-btn">
+                                <i class="fas fa-volume-up"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button id="translateBtn" class="translate-btn">
+                    <i class="fas fa-language"></i>
+                    Translate
+                </button>
+            </div>
+
+            <div class="history-section">
+                <h3>Recent Translations</h3>
+                <div id="translationHistory" class="history-list">
+                    <!-- Translation history will be populated here -->
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Translate Web App. Built with ❤️ for Sinhala speakers.</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
