@@ -266,6 +266,7 @@ let history = JSON.parse(localStorage.getItem('translationHistory')) || [];
 function init() {
     loadHistory();
     setupEventListeners();
+    updateCharCounter(); // Set initial counter value
 }
 
 // Setup event listeners
