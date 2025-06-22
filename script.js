@@ -244,6 +244,7 @@ const copyTranslationBtn = document.getElementById('copyTranslation');
 const speakSourceBtn = document.getElementById('speakSource');
 const speakTargetBtn = document.getElementById('speakTarget');
 const translationHistory = document.getElementById('translationHistory');
+const charCounter = document.getElementById('charCounter');
 
 // Modal Elements
 const aboutBtn = document.getElementById('aboutBtn');
@@ -269,6 +270,9 @@ function setupEventListeners() {
     speakSourceBtn.addEventListener('click', () => speakText(sourceText.value, sourceLanguage.value));
     speakTargetBtn.addEventListener('click', () => speakText(targetText.value, targetLanguage.value));
     
+    // Character counter
+    sourceText.addEventListener('input', updateCharCounter);
+
     // Modal events
     aboutBtn.addEventListener('click', openModal);
     closeModalSpan.addEventListener('click', closeModal);
@@ -481,6 +485,13 @@ function openModal() {
 
 function closeModal() {
     aboutModal.style.display = 'none';
+}
+
+// Character counter function
+function updateCharCounter() {
+    const currentLength = sourceText.value.length;
+    const maxLength = sourceText.maxLength;
+    charCounter.textContent = `${currentLength} / ${maxLength}`;
 }
 
 // Initialize the app when DOM is loaded
