@@ -245,6 +245,7 @@ const speakSourceBtn = document.getElementById('speakSource');
 const speakTargetBtn = document.getElementById('speakTarget');
 const translationHistory = document.getElementById('translationHistory');
 const charCounter = document.getElementById('charCounter');
+const clearHistoryBtn = document.getElementById('clearHistoryBtn');
 
 // Modal Elements
 const aboutBtn = document.getElementById('aboutBtn');
@@ -272,6 +273,9 @@ function setupEventListeners() {
     
     // Character counter
     sourceText.addEventListener('input', updateCharCounter);
+
+    // Clear History
+    clearHistoryBtn.addEventListener('click', clearHistory);
 
     // Modal events
     aboutBtn.addEventListener('click', openModal);
@@ -424,9 +428,11 @@ function loadHistory() {
     
     if (history.length === 0) {
         translationHistory.innerHTML = '<p style="text-align: center; color: #999; font-style: italic;">No translation history yet</p>';
+        clearHistoryBtn.style.display = 'none';
         return;
     }
     
+    clearHistoryBtn.style.display = 'inline-flex';
     history.forEach(item => {
         const historyItem = document.createElement('div');
         historyItem.className = 'history-item';
@@ -502,6 +508,15 @@ function updateCharCounter() {
     const currentLength = sourceText.value.length;
     const maxLength = sourceText.maxLength;
     charCounter.textContent = `${currentLength} / ${maxLength}`;
+}
+
+// Clear history
+function clearHistory() {
+    if (confirm('Are you sure you want to clear all translation history?')) {
+        history = [];
+        localStorage.removeItem('translationHistory');
+        loadHistory();
+    }
 }
 
 // Initialize the app when DOM is loaded
