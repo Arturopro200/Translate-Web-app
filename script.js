@@ -305,7 +305,7 @@ function debounce(func, wait) {
 }
 
 // Main translation function
-function translate() {
+async function translate() {
     const sourceTextValue = sourceText.value.trim();
     const sourceLang = sourceLanguage.value;
     const targetLang = targetLanguage.value;
@@ -315,37 +315,47 @@ function translate() {
         return;
     }
     
-    // Show loading state
     translateBtn.innerHTML = '<span class="loading"></span> Translating...';
     translateBtn.disabled = true;
-    
-    // Simulate API delay
-    setTimeout(() => {
-        const translatedText = performTranslation(sourceTextValue, sourceLang, targetLang);
+    targetText.value = 'Translating...';
+
+    try {
+        const translatedText = await performTranslation(sourceTextValue, sourceLang, targetLang);
         targetText.value = translatedText;
         
-        // Add to history
-        addToHistory(sourceTextValue, translatedText, sourceLang, targetLang);
-        
-        // Reset button
+        // Add to history only if translation was successful
+        if (translatedText && !translatedText.startsWith('Error:')) {
+            addToHistory(sourceTextValue, translatedText, sourceLang, targetLang);
+        }
+    } catch (error) {
+        console.error('Translation Error:', error);
+        targetText.value = 'Error: Could not translate.';
+    } finally {
         translateBtn.innerHTML = '<i class="fas fa-language"></i> Translate';
         translateBtn.disabled = false;
-    }, 1000);
+    }
 }
 
-// Perform translation using dictionary
-function performTranslation(text, sourceLang, targetLang) {
-    const words = text.toLowerCase().split(' ');
-    const translatedWords = words.map(word => {
-        if (sourceLang === 'en' && targetLang === 'si') {
-            return translations[word] || word;
-        } else if (sourceLang === 'si' && targetLang === 'en') {
-            return sinhalaToEnglish[word] || word;
+// Perform translation using MyMemory API
+async function performTranslation(text, sourceLang, targetLang) {
+    const apiUrl = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${sourceLang}|${targetLang}`;
+
+    try {
+        const response = await fetch(apiUrl);
+        if (!response.ok) {
+            throw new Error(`Network response was not ok. Status: ${response.status}`);
         }
-        return word;
-    });
-    
-    return translatedWords.join(' ');
+        const data = await response.json();
+        
+        if (data.responseStatus !== 200) {
+            throw new Error(`API Error: ${data.responseDetails}`);
+        }
+
+        return data.responseData.translatedText;
+    } catch (error) {
+        console.error("API Fetch Error:", error);
+        return 'Error: Could not connect to the translation service.';
+    }
 }
 
 // Swap languages
