@@ -264,6 +264,9 @@ const settingsBtn = document.getElementById('settingsBtn');
 const settingsPanel = document.getElementById('settingsPanel');
 const themeToggle = document.getElementById('theme-toggle');
 const voiceSpeedRadios = document.querySelectorAll('input[name="voiceSpeed"]');
+const customSpeedSlider = document.getElementById('customSpeedSlider');
+const customSpeedValue = document.getElementById('customSpeedValue');
+const testCustomSpeedBtn = document.getElementById('testCustomSpeedBtn');
 
 // Global state
 let voiceSpeed = 1;
@@ -334,9 +337,33 @@ function setupEventListeners() {
     // Voice Speed
     voiceSpeedRadios.forEach(radio => {
         radio.addEventListener('change', (e) => {
-            voiceSpeed = parseFloat(e.target.value);
+            const speed = parseFloat(e.target.value)
+            voiceSpeed = speed;
             localStorage.setItem('voiceSpeed', voiceSpeed);
+            // Update slider to reflect preset
+            customSpeedSlider.value = speed;
+            customSpeedValue.textContent = `${speed.toFixed(1)}x`;
         });
+    });
+
+    // Custom Speed Slider
+    customSpeedSlider.addEventListener('input', (e) => {
+        const speed = parseFloat(e.target.value);
+        voiceSpeed = speed;
+        customSpeedValue.textContent = `${speed.toFixed(1)}x`;
+        
+        // Deselect all radio buttons
+        voiceSpeedRadios.forEach(radio => radio.checked = false);
+    });
+
+    customSpeedSlider.addEventListener('change', () => {
+        // Save to local storage only when user releases the slider
+        localStorage.setItem('voiceSpeed', voiceSpeed);
+    });
+    
+    // Custom Speed Test Button
+    testCustomSpeedBtn.addEventListener('click', () => {
+        testVoiceSpeed(voiceSpeed, sourceLanguage.value);
     });
 
     // Voice Speed Test Buttons
@@ -607,7 +634,24 @@ function loadSettings() {
     // Load Voice Speed
     const savedSpeed = parseFloat(localStorage.getItem('voiceSpeed')) || 1;
     voiceSpeed = savedSpeed;
-    document.querySelector(`input[name="voiceSpeed"][value="${savedSpeed}"]`).checked = true;
+    
+    // Update slider
+    customSpeedSlider.value = savedSpeed;
+    customSpeedValue.textContent = `${savedSpeed.toFixed(1)}x`;
+
+    // Check if the speed matches a preset radio button
+    let presetMatch = false;
+    voiceSpeedRadios.forEach(radio => {
+        if (parseFloat(radio.value) === savedSpeed) {
+            radio.checked = true;
+            presetMatch = true;
+        }
+    });
+
+    if (!presetMatch) {
+        // If no preset matches, it's a custom speed, so uncheck all radios.
+        voiceSpeedRadios.forEach(radio => radio.checked = false);
+    }
 }
 
 function toggleTheme() {
