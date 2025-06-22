@@ -220,13 +220,40 @@ header p {
     transform: translateY(0);
 }
 
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.clear-history-btn {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-light);
+    padding: 8px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.clear-history-btn:hover {
+    background: #ffebee;
+    color: #c62828;
+    border-color: #ef9a9a;
+}
+
 .history-section {
     border-top: 1px solid var(--border-color);
     padding-top: 30px;
 }
 
 .history-section h3 {
-    margin-bottom: 20px;
+    margin-bottom: 0;
     color: var(--text-color);
     font-size: 1.2rem;
     font-weight: 500;
