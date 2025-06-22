@@ -280,6 +280,7 @@ function init() {
     setupEventListeners();
     updateCharCounter(); // Set initial counter value
     loadSettings();
+    sourceText.focus({ preventScroll: true });
 }
 
 // Setup event listeners
@@ -467,7 +468,19 @@ function clearSource() {
 function copyTranslation() {
     if (targetText.value) {
         navigator.clipboard.writeText(targetText.value).then(() => {
-            showNotification('Translation copied to clipboard!');
+            const icon = copyTranslationBtn.querySelector('i');
+            const originalIcon = icon.className;
+
+            // Give visual feedback
+            icon.className = 'fas fa-check';
+            copyTranslationBtn.classList.add('success');
+
+            setTimeout(() => {
+                icon.className = originalIcon;
+                copyTranslationBtn.classList.remove('success');
+            }, 2000);
+            
+            showToastNotification('Translation copied to clipboard!');
         });
     }
 }
@@ -502,6 +515,12 @@ function addToHistory(sourceText, targetText, sourceLang, targetLang) {
     
     localStorage.setItem('translationHistory', JSON.stringify(history));
     loadHistory();
+
+    // Animate the new item
+    const firstItem = translationHistory.querySelector('.history-item');
+    if(firstItem) {
+        firstItem.classList.add('new-item-animation');
+    }
 }
 
 // Load and display history
