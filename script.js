@@ -259,6 +259,15 @@ const closeConfirmModal = document.getElementById('closeConfirmModal');
 const cancelClearBtn = document.getElementById('cancelClearBtn');
 const confirmClearBtn = document.getElementById('confirmClearBtn');
 
+// Settings Elements
+const settingsBtn = document.getElementById('settingsBtn');
+const settingsPanel = document.getElementById('settingsPanel');
+const themeToggle = document.getElementById('theme-toggle');
+const voiceSpeedRadios = document.querySelectorAll('input[name="voiceSpeed"]');
+
+// Global state
+let voiceSpeed = 1;
+
 // Translation history
 let history = JSON.parse(localStorage.getItem('translationHistory')) || [];
 
@@ -267,6 +276,7 @@ function init() {
     loadHistory();
     setupEventListeners();
     updateCharCounter(); // Set initial counter value
+    loadSettings();
 }
 
 // Setup event listeners
@@ -300,6 +310,10 @@ function setupEventListeners() {
             closeModal();
             confirmModal.style.display = 'none';
         }
+        // Close settings panel if clicked outside
+        if (!settingsPanel.contains(event.target) && !settingsBtn.contains(event.target)) {
+            settingsPanel.classList.remove('show');
+        }
     });
 
     // Auto-translate on input
@@ -308,6 +322,22 @@ function setupEventListeners() {
     // Language change
     sourceLanguage.addEventListener('change', translate);
     targetLanguage.addEventListener('change', translate);
+
+    // Settings Panel
+    settingsBtn.addEventListener('click', () => {
+        settingsPanel.classList.toggle('show');
+    });
+
+    // Theme Toggle
+    themeToggle.addEventListener('change', toggleTheme);
+
+    // Voice Speed
+    voiceSpeedRadios.forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            voiceSpeed = parseFloat(e.target.value);
+            localStorage.setItem('voiceSpeed', voiceSpeed);
+        });
+    });
 }
 
 // Debounce function
@@ -411,6 +441,7 @@ function speakText(text, lang) {
     if ('speechSynthesis' in window && text) {
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = lang === 'si' ? 'si-LK' : 'en-US';
+        utterance.rate = voiceSpeed; // Use selected voice speed
         speechSynthesis.speak(utterance);
     }
 }
@@ -553,6 +584,31 @@ function showToastNotification(message) {
             document.body.removeChild(notification);
         }, 500); // Wait for fade out animation
     }, 3000);
+}
+
+// --- Settings Functions ---
+function loadSettings() {
+    // Load Theme
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+        themeToggle.checked = true;
+    }
+
+    // Load Voice Speed
+    const savedSpeed = parseFloat(localStorage.getItem('voiceSpeed')) || 1;
+    voiceSpeed = savedSpeed;
+    document.querySelector(`input[name="voiceSpeed"][value="${savedSpeed}"]`).checked = true;
+}
+
+function toggleTheme() {
+    if (themeToggle.checked) {
+        document.body.classList.add('dark-mode');
+        localStorage.setItem('theme', 'dark');
+    } else {
+        document.body.classList.remove('dark-mode');
+        localStorage.setItem('theme', 'light');
+    }
 }
 
 // Initialize the app when DOM is loaded
