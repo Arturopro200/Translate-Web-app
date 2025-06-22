@@ -245,6 +245,12 @@ const speakSourceBtn = document.getElementById('speakSource');
 const speakTargetBtn = document.getElementById('speakTarget');
 const translationHistory = document.getElementById('translationHistory');
 
+// Modal Elements
+const aboutBtn = document.getElementById('aboutBtn');
+const aboutModal = document.getElementById('aboutModal');
+const closeModalSpan = document.querySelector('.close-modal-span');
+const closeModalBtn = document.getElementById('closeModalBtn');
+
 // Translation history
 let history = JSON.parse(localStorage.getItem('translationHistory')) || [];
 
@@ -263,6 +269,16 @@ function setupEventListeners() {
     speakSourceBtn.addEventListener('click', () => speakText(sourceText.value, sourceLanguage.value));
     speakTargetBtn.addEventListener('click', () => speakText(targetText.value, targetLanguage.value));
     
+    // Modal events
+    aboutBtn.addEventListener('click', openModal);
+    closeModalSpan.addEventListener('click', closeModal);
+    closeModalBtn.addEventListener('click', closeModal);
+    window.addEventListener('click', (event) => {
+        if (event.target == aboutModal) {
+            closeModal();
+        }
+    });
+
     // Auto-translate on input
     sourceText.addEventListener('input', debounce(translate, 500));
     
@@ -457,6 +473,15 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+// Modal functions
+function openModal() {
+    aboutModal.style.display = 'block';
+}
+
+function closeModal() {
+    aboutModal.style.display = 'none';
+}
 
 // Initialize the app when DOM is loaded
 document.addEventListener('DOMContentLoaded', init); 
