@@ -259,6 +259,18 @@ const closeConfirmModal = document.getElementById('closeConfirmModal');
 const cancelClearBtn = document.getElementById('cancelClearBtn');
 const confirmClearBtn = document.getElementById('confirmClearBtn');
 
+// Settings Elements
+const settingsBtn = document.getElementById('settingsBtn');
+const settingsPanel = document.getElementById('settingsPanel');
+const themeToggleBtn = document.getElementById('theme-toggle-btn');
+const voiceSpeedRadios = document.querySelectorAll('input[name="voiceSpeed"]');
+const customSpeedSlider = document.getElementById('customSpeedSlider');
+const customSpeedValue = document.getElementById('customSpeedValue');
+const testCustomSpeedBtn = document.getElementById('testCustomSpeedBtn');
+
+// Global state
+let voiceSpeed = 1;
+
 // Translation history
 let history = JSON.parse(localStorage.getItem('translationHistory')) || [];
 
@@ -267,6 +279,8 @@ function init() {
     loadHistory();
     setupEventListeners();
     updateCharCounter(); // Set initial counter value
+    loadSettings();
+    sourceText.focus({ preventScroll: true });
 }
 
 // Setup event listeners
@@ -300,6 +314,10 @@ function setupEventListeners() {
             closeModal();
             confirmModal.style.display = 'none';
         }
+        // Close settings panel if clicked outside
+        if (!settingsPanel.contains(event.target) && !settingsBtn.contains(event.target)) {
+            settingsPanel.classList.remove('show');
+        }
     });
 
     // Auto-translate on input
@@ -308,6 +326,55 @@ function setupEventListeners() {
     // Language change
     sourceLanguage.addEventListener('change', translate);
     targetLanguage.addEventListener('change', translate);
+
+    // Settings Panel
+    settingsBtn.addEventListener('click', () => {
+        settingsPanel.classList.toggle('show');
+    });
+
+    // Theme Toggle
+    themeToggleBtn.addEventListener('click', toggleTheme);
+
+    // Voice Speed
+    voiceSpeedRadios.forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            const speed = parseFloat(e.target.value)
+            voiceSpeed = speed;
+            localStorage.setItem('voiceSpeed', voiceSpeed);
+            // Update slider to reflect preset
+            customSpeedSlider.value = speed;
+            customSpeedValue.textContent = `${speed.toFixed(1)}x`;
+        });
+    });
+
+    // Custom Speed Slider
+    customSpeedSlider.addEventListener('input', (e) => {
+        const speed = parseFloat(e.target.value);
+        voiceSpeed = speed;
+        customSpeedValue.textContent = `${speed.toFixed(1)}x`;
+        
+        // Deselect all radio buttons
+        voiceSpeedRadios.forEach(radio => radio.checked = false);
+    });
+
+    customSpeedSlider.addEventListener('change', () => {
+        // Save to local storage only when user releases the slider
+        localStorage.setItem('voiceSpeed', voiceSpeed);
+    });
+    
+    // Custom Speed Test Button
+    testCustomSpeedBtn.addEventListener('click', () => {
+        testVoiceSpeed(voiceSpeed, sourceLanguage.value);
+    });
+
+    // Voice Speed Test Buttons
+    const voiceSpeedTestBtns = document.querySelectorAll('.test-speed-btn');
+    voiceSpeedTestBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const speed = parseFloat(e.currentTarget.dataset.speed);
+            testVoiceSpeed(speed, sourceLanguage.value);
+        });
+    });
 }
 
 // Debounce function
@@ -401,7 +468,19 @@ function clearSource() {
 function copyTranslation() {
     if (targetText.value) {
         navigator.clipboard.writeText(targetText.value).then(() => {
-            showNotification('Translation copied to clipboard!');
+            const icon = copyTranslationBtn.querySelector('i');
+            const originalIcon = icon.className;
+
+            // Give visual feedback
+            icon.className = 'fas fa-check';
+            copyTranslationBtn.classList.add('success');
+
+            setTimeout(() => {
+                icon.className = originalIcon;
+                copyTranslationBtn.classList.remove('success');
+            }, 2000);
+            
+            showToastNotification('Translation copied to clipboard!');
         });
     }
 }
@@ -411,6 +490,7 @@ function speakText(text, lang) {
     if ('speechSynthesis' in window && text) {
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = lang === 'si' ? 'si-LK' : 'en-US';
+        utterance.rate = voiceSpeed; // Use selected voice speed
         speechSynthesis.speak(utterance);
     }
 }
@@ -435,6 +515,12 @@ function addToHistory(sourceText, targetText, sourceLang, targetLang) {
     
     localStorage.setItem('translationHistory', JSON.stringify(history));
     loadHistory();
+
+    // Animate the new item
+    const firstItem = translationHistory.querySelector('.history-item');
+    if(firstItem) {
+        firstItem.classList.add('new-item-animation');
+    }
 }
 
 // Load and display history
@@ -553,6 +639,57 @@ function showToastNotification(message) {
             document.body.removeChild(notification);
         }, 500); // Wait for fade out animation
     }, 3000);
+}
+
+// --- Settings Functions ---
+function loadSettings() {
+    // Load Theme
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+    }
+
+    // Load Voice Speed
+    const savedSpeed = parseFloat(localStorage.getItem('voiceSpeed')) || 1;
+    voiceSpeed = savedSpeed;
+    
+    // Update slider
+    customSpeedSlider.value = savedSpeed;
+    customSpeedValue.textContent = `${savedSpeed.toFixed(1)}x`;
+
+    // Check if the speed matches a preset radio button
+    let presetMatch = false;
+    voiceSpeedRadios.forEach(radio => {
+        if (parseFloat(radio.value) === savedSpeed) {
+            radio.checked = true;
+            presetMatch = true;
+        }
+    });
+
+    if (!presetMatch) {
+        // If no preset matches, it's a custom speed, so uncheck all radios.
+        voiceSpeedRadios.forEach(radio => radio.checked = false);
+    }
+}
+
+function toggleTheme() {
+    document.body.classList.toggle('dark-mode');
+    if (document.body.classList.contains('dark-mode')) {
+        localStorage.setItem('theme', 'dark');
+    } else {
+        localStorage.setItem('theme', 'light');
+    }
+}
+
+function testVoiceSpeed(speed, lang) {
+    const testPhrase = lang === 'si' ? 'කටහඬ වේගය පරීක්ෂා කිරීම' : 'Testing voice speed';
+    if ('speechSynthesis' in window) {
+        speechSynthesis.cancel(); // Stop any currently playing speech
+        const utterance = new SpeechSynthesisUtterance(testPhrase);
+        utterance.lang = lang === 'si' ? 'si-LK' : 'en-US';
+        utterance.rate = speed;
+        speechSynthesis.speak(utterance);
+    }
 }
 
 // Initialize the app when DOM is loaded

@@ -15,9 +15,12 @@
         <header>
             <h1><i class="fas fa-language"></i> Translate Web App</h1>
             <p>English ↔ Sinhala Translation</p>
+            <button id="settingsBtn" class="settings-btn" title="Settings">
+                <i class="fas fa-cog"></i>
+            </button>
         </header>
 
-        <main class="translate-container">
+        <main>
             <div class="language-selector">
                 <div class="language-box">
                     <label for="sourceLanguage">From:</label>
@@ -90,11 +93,11 @@
                 </div>
             </div>
         </main>
-
-        <footer>
-            <p>Developed by <strong>Janith Suraweera</strong> | <button id="aboutBtn" class="about-btn-footer">About</button></p>
-        </footer>
     </div>
+
+    <footer>
+        <p>Developed by <strong>Janith Suraweera</strong> | <button id="aboutBtn" class="about-btn-footer">About</button></p>
+    </footer>
 
     <!-- About Modal -->
     <div id="aboutModal" class="modal">
@@ -124,6 +127,81 @@
             <div class="modal-buttons">
                 <button id="cancelClearBtn" class="modal-button-secondary">Cancel</button>
                 <button id="confirmClearBtn" class="modal-button-danger">Yes, Clear</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Panel -->
+    <div id="settingsPanel" class="settings-panel">
+        <div class="settings-panel-header">
+            <h3>Settings</h3>
+        </div>
+        <div class="settings-section">
+            <h4>Theme</h4>
+            <div class="theme-toggle-container">
+                <button id="theme-toggle-btn" class="theme-toggle-btn" title="Toggle Theme">
+                    <span class="sun-icon-wrapper">
+                        <i class="fas fa-sun"></i>
+                    </span>
+                    <span class="moon-icon-wrapper">
+                        <i class="fas fa-moon"></i>
+                    </span>
+                </button>
+            </div>
+        </div>
+        <div class="settings-section">
+            <h4>Voice speed</h4>
+            <div class="voice-speed-options">
+                <div class="voice-speed-option">
+                    <label>
+                        <input type="radio" name="voiceSpeed" value="1" checked> Normal
+                    </label>
+                    <button class="test-speed-btn" data-speed="1" title="Test Speed">
+                        <i class="fas fa-play"></i>
+                    </button>
+                </div>
+                <div class="voice-speed-option">
+                    <label>
+                        <input type="radio" name="voiceSpeed" value="0.8"> Slow
+                    </label>
+                    <button class="test-speed-btn" data-speed="0.8" title="Test Speed">
+                        <i class="fas fa-play"></i>
+                    </button>
+                </div>
+                <div class="voice-speed-option">
+                    <label>
+                        <input type="radio" name="voiceSpeed" value="0.5"> Slower
+                    </label>
+                    <button class="test-speed-btn" data-speed="0.5" title="Test Speed">
+                        <i class="fas fa-play"></i>
+                    </button>
+                </div>
+                <div class="voice-speed-option">
+                    <label>
+                        <input type="radio" name="voiceSpeed" value="1.5"> Fast
+                    </label>
+                    <button class="test-speed-btn" data-speed="1.5" title="Test Speed">
+                        <i class="fas fa-play"></i>
+                    </button>
+                </div>
+                <div class="voice-speed-option">
+                    <label>
+                        <input type="radio" name="voiceSpeed" value="2"> Faster
+                    </label>
+                    <button class="test-speed-btn" data-speed="2" title="Test Speed">
+                        <i class="fas fa-play"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="settings-section">
+            <h4>Custom Speed</h4>
+            <div class="custom-speed-control">
+                <input type="range" id="customSpeedSlider" min="0.5" max="2.5" value="1" step="0.1" title="Custom Voice Speed">
+                <span id="customSpeedValue">1.0x</span>
+                <button id="testCustomSpeedBtn" class="test-speed-btn" title="Test Custom Speed">
+                    <i class="fas fa-play"></i>
+                </button>
             </div>
         </div>
     </div>

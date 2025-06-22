@@ -1,122 +1,78 @@
-# Translate Web App - English ↔ Sinhala
+# English-Sinhala Translation Web App
 
-A modern, responsive web application for translating between English and Sinhala languages. Built with HTML, CSS, and JavaScript.
+This is a modern, responsive web application for translating text between English and Sinhala. It's built with HTML, CSS, and JavaScript, and it uses the MyMemory API for real-time translations.
 
-## Features
+![image](https://github.com/user-attachments/assets/e5229237-724f-4a94-9640-c3d3e6913c32)
 
-- **Bidirectional Translation**: Translate from English to Sinhala and vice versa
-- **Modern UI**: Clean, Google Translate-inspired interface
-- **Text-to-Speech**: Listen to translations in both languages
-- **Translation History**: View and reuse recent translations
-- **Copy to Clipboard**: Easy copying of translated text
-- **Responsive Design**: Works on desktop, tablet, and mobile devices
-- **Auto-translate**: Real-time translation as you type
-- **Language Swap**: Quick language switching with one click
+## ✨ Features
 
-## How to Use
+- **Bidirectional Translation**: Translate text from English to Sinhala and vice-versa.
+- **Real-Time API Translation**: Uses the **MyMemory API** to provide accurate translations on the fly.
+- **Modern UI**: A clean, intuitive, and fully responsive user interface.
+- **Advanced Theming**:
+    - **Light & Dark Modes**: Switch between light and dark themes for your comfort.
+    - **Live Theme Switcher**: A sleek, animated toggle to switch themes instantly.
+- **Advanced Voice Controls**:
+    - **Text-to-Speech**: Listen to the translated text in its native voice.
+    - **Variable Speed**: Adjust the speech speed (Normal, Slow, Slower).
+- **Enhanced User Experience**:
+    - **Instant Copy Feedback**: The copy button provides visual feedback when text is copied successfully.
+    - **Smooth Animations**: Subtle animations for a more engaging user experience.
+    - **Auto-Focus**: The input text area is focused on page load for immediate use.
+- **Full History Management**:
+    - **Automatic Saving**: All translations are saved to your browser's local storage.
+    - **Easy Reuse**: Click on any past translation to load it back into the translator.
+    - **Clear History**: A dedicated button to clear all your saved history.
+- **Fully Responsive**: The application is designed to work seamlessly on desktops, tablets, and mobile devices.
 
-1. **Open the App**: Open `index.html` in your web browser
-2. **Select Languages**: Choose source and target languages from the dropdown menus
-3. **Enter Text**: Type or paste text in the left text area
-4. **Translate**: Click the "Translate" button or wait for auto-translation
-5. **Use Features**:
-   - Click the speaker icon to hear pronunciation
-   - Click the copy icon to copy translation
-   - Click the swap button to switch languages
-   - Click the clear button to clear text
-   - Click on history items to reuse translations
+## 🚀 How to Use
 
-## File Structure
+1. **Enter Text**: Type or paste the text you want to translate into the input text area.
+2. **Select Language**: The app automatically detects the language, but you can switch the translation direction using the "Switch" button.
+3. **Translate**: Click the "Translate" button to get the translation.
+4. **Listen**: Click the "Speak" button to hear the translated text.
+5. **Copy**: Click the "Copy" button to copy the translated text to your clipboard.
+6. **Manage History**: View your past translations in the history section. Click on a history item to reuse it, or clear all history with the "Clear History" button.
+7. **Change Settings**:
+   - Click the **Settings** icon to open the settings panel.
+   - **Theme**: Use the animated toggle to switch between **Light** and **Dark** modes.
+   - **Voice Speed**: Choose your preferred voice speed for text-to-speech.
+
+## 🛠️ Technologies Used
+
+- **HTML5**: For the structure of the web app.
+- **CSS3**: For styling, including modern features like `color-mix()` and custom properties for theming.
+- **JavaScript (ES6+)**: For the application logic, interactivity, and API communication.
+- **MyMemory API**: For providing translation services.
+- **Font Awesome**: For icons.
+- **Google Fonts**: For typography.
+
+## 📂 File Structure
 
 ```
-translate-web-app/
-├── index.html          # Main HTML file
-├── styles.css          # CSS styles
-├── script.js           # JavaScript functionality
-└── README.md           # This file
+.
+├── .gitignore
+├── index.html
+├── README.md
+├── script.js
+└── styles.css
 ```
 
-## Technologies Used
+## 🤝 Contributing
 
-- **HTML5**: Structure and semantic markup
-- **CSS3**: Modern styling with gradients, animations, and responsive design
-- **JavaScript (ES6+)**: Interactive functionality and translation logic
-- **Font Awesome**: Icons for better user experience
-- **Google Fonts**: Roboto font family for clean typography
+Contributions are welcome! If you have ideas for new features or improvements, feel free to open an issue or submit a pull request.
 
-## Translation Dictionary
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature/your-feature-name`).
+3. Make your changes.
+4. Commit your changes (`git commit -m 'Add some feature'`).
+5. Push to the branch (`git push origin feature/your-feature-name`).
+6. Open a pull request.
 
-The app includes a comprehensive dictionary with common words and phrases in both English and Sinhala. The dictionary covers:
+## ✍️ Author
 
-- Greetings and common phrases
-- Family and relationships
-- Colors and descriptions
-- Numbers and time
-- Emotions and feelings
-- Basic vocabulary
-- And much more!
+- **Janith Suraweera** - [@janithsuraweera](https://github.com/janithsuraweera)
 
-## Browser Compatibility
+## 📝 License
 
-- Chrome (recommended)
-- Firefox
-- Safari
-- Edge
-- Mobile browsers
-
-## Features in Detail
-
-### Translation
-- Real-time translation as you type
-- Support for both English and Sinhala
-- Fallback to original text for unknown words
-
-### Text-to-Speech
-- Uses browser's built-in speech synthesis
-- Supports both English and Sinhala pronunciation
-- Click speaker icons to hear text
-
-### History Management
-- Automatically saves translations
-- Stores up to 50 recent translations
-- Click on history items to reuse
-- Persists across browser sessions
-
-### Responsive Design
-- Works on all screen sizes
-- Mobile-friendly interface
-- Touch-optimized controls
-
-## Getting Started
-
-1. Download or clone the repository
-2. Open `index.html` in your web browser
-3. Start translating!
-
-## Customization
-
-You can easily customize the app by:
-
-- Adding more words to the translation dictionary in `script.js`
-- Modifying colors and styles in `styles.css`
-- Adding new features in `script.js`
-
-## Contributing
-
-Feel free to contribute by:
-- Adding more translations to the dictionary
-- Improving the UI/UX
-- Adding new features
-- Fixing bugs
-
-## License
-
-This project is open source and available under the MIT License.
-
-## Support
-
-For support or questions, please open an issue in the repository.
-
----
-
-**Built with ❤️ for Sinhala speakers around the world** 
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
