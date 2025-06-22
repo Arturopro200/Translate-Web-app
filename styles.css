@@ -208,6 +208,12 @@ input:checked + .slider:before {
 }
 
 /* Voice Speed Radio Buttons */
+.voice-speed-option {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .voice-speed-options {
     display: flex;
     flex-direction: column;
@@ -248,6 +254,30 @@ input:checked + .slider:before {
     transform: scale(1);
 }
 
+.test-speed-btn {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--text-light);
+    transition: all 0.2s ease;
+}
+
+.test-speed-btn:hover {
+    background-color: color-mix(in srgb, var(--text-color) 8%, transparent);
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.test-speed-btn i {
+    font-size: 0.8rem;
+    margin-left: 2px;
+}
 
 footer {
     text-align: center;

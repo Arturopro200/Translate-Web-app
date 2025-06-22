@@ -338,6 +338,15 @@ function setupEventListeners() {
             localStorage.setItem('voiceSpeed', voiceSpeed);
         });
     });
+
+    // Voice Speed Test Buttons
+    const voiceSpeedTestBtns = document.querySelectorAll('.test-speed-btn');
+    voiceSpeedTestBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const speed = parseFloat(e.currentTarget.dataset.speed);
+            testVoiceSpeed(speed, sourceLanguage.value);
+        });
+    });
 }
 
 // Debounce function
@@ -608,6 +617,17 @@ function toggleTheme() {
     } else {
         document.body.classList.remove('dark-mode');
         localStorage.setItem('theme', 'light');
+    }
+}
+
+function testVoiceSpeed(speed, lang) {
+    const testPhrase = lang === 'si' ? 'කටහඬ වේගය පරීක්ෂා කිරීම' : 'Testing voice speed';
+    if ('speechSynthesis' in window) {
+        speechSynthesis.cancel(); // Stop any currently playing speech
+        const utterance = new SpeechSynthesisUtterance(testPhrase);
+        utterance.lang = lang === 'si' ? 'si-LK' : 'en-US';
+        utterance.rate = speed;
+        speechSynthesis.speak(utterance);
     }
 }
 

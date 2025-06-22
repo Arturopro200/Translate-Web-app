@@ -150,15 +150,30 @@
         <div class="settings-section">
             <h4>Voice speed</h4>
             <div class="voice-speed-options">
-                <label>
-                    <input type="radio" name="voiceSpeed" value="1" checked> Normal
-                </label>
-                <label>
-                    <input type="radio" name="voiceSpeed" value="0.8"> Slow
-                </label>
-                <label>
-                    <input type="radio" name="voiceSpeed" value="0.5"> Slower
-                </label>
+                <div class="voice-speed-option">
+                    <label>
+                        <input type="radio" name="voiceSpeed" value="1" checked> Normal
+                    </label>
+                    <button class="test-speed-btn" data-speed="1" title="Test Speed">
+                        <i class="fas fa-play"></i>
+                    </button>
+                </div>
+                <div class="voice-speed-option">
+                    <label>
+                        <input type="radio" name="voiceSpeed" value="0.8"> Slow
+                    </label>
+                    <button class="test-speed-btn" data-speed="0.8" title="Test Speed">
+                        <i class="fas fa-play"></i>
+                    </button>
+                </div>
+                <div class="voice-speed-option">
+                    <label>
+                        <input type="radio" name="voiceSpeed" value="0.5"> Slower
+                    </label>
+                    <button class="test-speed-btn" data-speed="0.5" title="Test Speed">
+                        <i class="fas fa-play"></i>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
