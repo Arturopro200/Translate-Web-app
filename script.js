@@ -274,13 +274,58 @@ let voiceSpeed = 1;
 // Translation history
 let history = JSON.parse(localStorage.getItem('translationHistory')) || [];
 
+// --- NEW LANGUAGES OBJECT ---
+const LANGUAGES = {
+    "auto": "Detect Language", "af": "Afrikaans", "sq": "Albanian", "am": "Amharic", "ar": "Arabic", "hy": "Armenian", "az": "Azerbaijani",
+    "eu": "Basque", "be": "Belarusian", "bn": "Bengali", "bs": "Bosnian", "bg": "Bulgarian", "ca": "Catalan", "ceb": "Cebuano", "ny": "Chichewa",
+    "zh-CN": "Chinese (Simplified)", "zh-TW": "Chinese (Traditional)", "co": "Corsican", "hr": "Croatian", "cs": "Czech", "da": "Danish",
+    "nl": "Dutch", "en": "English", "eo": "Esperanto", "et": "Estonian", "tl": "Filipino", "fi": "Finnish", "fr": "French", "fy": "Frisian",
+    "gl": "Galician", "ka": "Georgian", "de": "German", "el": "Greek", "gu": "Gujarati", "ht": "Haitian Creole", "ha": "Hausa", "haw": "Hawaiian",
+    "iw": "Hebrew", "he": "Hebrew", "hi": "Hindi", "hmn": "Hmong", "hu": "Hungarian", "is": "Icelandic", "ig": "Igbo", "id": "Indonesian",
+    "ga": "Irish", "it": "Italian", "ja": "Japanese", "jw": "Javanese", "kn": "Kannada", "kk": "Kazakh", "km": "Khmer", "rw": "Kinyarwanda",
+    "ko": "Korean", "ku": "Kurdish (Kurmanji)", "ky": "Kyrgyz", "lo": "Lao", "la": "Latin", "lv": "Latvian", "lt": "Lithuanian",
+    "lb": "Luxembourgish", "mk": "Macedonian", "mg": "Malagasy", "ms": "Malay", "ml": "Malayalam", "mt": "Maltese", "mi": "Maori",
+    "mr": "Marathi", "mn": "Mongolian", "my": "Myanmar (Burmese)", "ne": "Nepali", "no": "Norwegian", "or": "Odia (Oriya)", "ps": "Pashto",
+    "fa": "Persian", "pl": "Polish", "pt": "Portuguese", "pa": "Punjabi", "ro": "Romanian", "ru": "Russian", "sm": "Samoan", "gd": "Scots Gaelic",
+    "sr": "Serbian", "st": "Sesotho", "sn": "Shona", "sd": "Sindhi", "si": "Sinhala", "sk": "Slovak", "sl": "Slovenian", "so": "Somali",
+    "es": "Spanish", "su": "Sundanese", "sw": "Swahili", "sv": "Swedish", "tg": "Tajik", "ta": "Tamil", "tt": "Tatar", "te": "Telugu",
+    "th": "Thai", "tr": "Turkish", "tk": "Turkmen", "uk": "Ukrainian", "ur": "Urdu", "ug": "Uyghur", "uz": "Uzbek", "vi": "Vietnamese",
+    "cy": "Welsh", "xh": "Xhosa", "yi": "Yiddish", "yo": "Yoruba", "zu": "Zulu"
+};
+
 // Initialize the app
 function init() {
+    populateLanguageDropdowns();
     loadHistory();
     setupEventListeners();
     updateCharCounter(); // Set initial counter value
     loadSettings();
     sourceText.focus({ preventScroll: true });
+}
+
+// Populate Language Dropdowns
+function populateLanguageDropdowns() {
+    // Populate source language dropdown
+    for (const code in LANGUAGES) {
+        const option = document.createElement('option');
+        option.value = code;
+        option.textContent = LANGUAGES[code];
+        sourceLanguage.appendChild(option);
+    }
+    
+    // Populate target language dropdown (without "Detect Language")
+    for (const code in LANGUAGES) {
+        if (code === 'auto') continue;
+        const option = document.createElement('option');
+        option.value = code;
+        option.textContent = LANGUAGES[code];
+        targetLanguage.appendChild(option);
+    }
+    
+    // Set default values
+    sourceLanguage.value = 'auto';
+    targetLanguage.value = 'si';
+    swapLanguagesBtn.disabled = true; // Disable swap initially
 }
 
 // Setup event listeners
@@ -324,7 +369,11 @@ function setupEventListeners() {
     sourceText.addEventListener('input', debounce(translate, 500));
     
     // Language change
-    sourceLanguage.addEventListener('change', translate);
+    sourceLanguage.addEventListener('change', () => {
+        // Disable swap button if 'Detect Language' is selected
+        swapLanguagesBtn.disabled = sourceLanguage.value === 'auto';
+        translate();
+    });
     targetLanguage.addEventListener('change', translate);
 
     // Settings Panel
@@ -406,12 +455,14 @@ async function translate() {
     targetText.value = 'Translating...';
 
     try {
-        const translatedText = await performTranslation(sourceTextValue, sourceLang, targetLang);
+        const { translatedText, detectedLangCode } = await performTranslation(sourceTextValue, sourceLang, targetLang);
         targetText.value = translatedText;
         
         // Add to history only if translation was successful
         if (translatedText && !translatedText.startsWith('Error:')) {
-            addToHistory(sourceTextValue, translatedText, sourceLang, targetLang);
+            // Use the detected language for history if source was 'auto'
+            const historySourceLang = sourceLang === 'auto' ? detectedLangCode : sourceLang;
+            addToHistory(sourceTextValue, translatedText, historySourceLang, targetLang);
         }
     } catch (error) {
         console.error('Translation Error:', error);
@@ -424,7 +475,9 @@ async function translate() {
 
 // Perform translation using MyMemory API
 async function performTranslation(text, sourceLang, targetLang) {
-    const apiUrl = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${sourceLang}|${targetLang}`;
+    // The API uses 'auto' for language detection
+    const langPair = `${sourceLang}|${targetLang}`;
+    const apiUrl = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${langPair}`;
 
     try {
         const response = await fetch(apiUrl);
@@ -436,11 +489,15 @@ async function performTranslation(text, sourceLang, targetLang) {
         if (data.responseStatus !== 200) {
             throw new Error(`API Error: ${data.responseDetails}`);
         }
-
-        return data.responseData.translatedText;
+        
+        // Return both translated text and the detected language code
+        return {
+            translatedText: data.responseData.translatedText,
+            detectedLangCode: data.responseData.detectedLanguage
+        };
     } catch (error) {
         console.error("API Fetch Error:", error);
-        return 'Error: Could not connect to the translation service.';
+        return { translatedText: 'Error: Could not connect to the translation service.' };
     }
 }
 
@@ -488,8 +545,9 @@ function copyTranslation() {
 // Text-to-speech
 function speakText(text, lang) {
     if ('speechSynthesis' in window && text) {
+        speechSynthesis.cancel(); // Cancel any previous speech
         const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = lang === 'si' ? 'si-LK' : 'en-US';
+        utterance.lang = lang; // Use the language code directly
         utterance.rate = voiceSpeed; // Use selected voice speed
         speechSynthesis.speak(utterance);
     }
@@ -537,7 +595,13 @@ function loadHistory() {
     history.forEach(item => {
         const historyItem = document.createElement('div');
         historyItem.className = 'history-item';
+        
+        // Get full language names from codes
+        const sourceLangName = LANGUAGES[item.sourceLang] || 'Unknown';
+        const targetLangName = LANGUAGES[item.targetLang] || 'Unknown';
+        
         historyItem.innerHTML = `
+            <div class="lang-pair">${sourceLangName} → ${targetLangName}</div>
             <div class="source-text">${item.sourceText}</div>
             <div class="target-text">${item.targetText}</div>
             <div class="timestamp">${item.timestamp}</div>
@@ -682,11 +746,12 @@ function toggleTheme() {
 }
 
 function testVoiceSpeed(speed, lang) {
+    // Use a generic test phrase, or English if lang is 'auto'
     const testPhrase = lang === 'si' ? 'කටහඬ වේගය පරීක්ෂා කිරීම' : 'Testing voice speed';
     if ('speechSynthesis' in window) {
         speechSynthesis.cancel(); // Stop any currently playing speech
         const utterance = new SpeechSynthesisUtterance(testPhrase);
-        utterance.lang = lang === 'si' ? 'si-LK' : 'en-US';
+        utterance.lang = lang === 'auto' ? 'en-US' : lang;
         utterance.rate = speed;
         speechSynthesis.speak(utterance);
     }
