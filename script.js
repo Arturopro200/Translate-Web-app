@@ -81,6 +81,20 @@ const LANGUAGES = {
     "cy": "Welsh", "xh": "Xhosa", "yi": "Yiddish", "yo": "Yoruba", "zu": "Zulu"
 };
 
+const voiceGenderSection = document.querySelector('.voice-gender-section');
+const voiceGenderRadios = document.getElementsByName('voiceGender');
+let voiceGender = localStorage.getItem('voiceGender') || 'female';
+let availableVoices = [];
+
+// Load voices (browser TTS)
+function loadVoices() {
+    availableVoices = speechSynthesis.getVoices();
+}
+if ('speechSynthesis' in window) {
+    loadVoices();
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+}
+
 // Initialize the app
 function init() {
     checkPremiumStatus();
@@ -296,6 +310,16 @@ function setupEventListeners() {
             e.preventDefault();
         }
     });
+
+    // Voice gender radio change event
+    voiceGenderRadios.forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                voiceGender = e.target.value;
+                localStorage.setItem('voiceGender', voiceGender);
+            }
+        });
+    });
 }
 
 // Debounce function
@@ -412,8 +436,13 @@ function speakText(text, lang) {
     if ('speechSynthesis' in window && text) {
         speechSynthesis.cancel(); // Cancel any previous speech
         const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = lang; // Use the language code directly
-        utterance.rate = voiceSpeed; // Use selected voice speed
+        utterance.lang = lang;
+        utterance.rate = voiceSpeed;
+        // Pick voice by gender (premium only)
+        if (isPremium) {
+            const v = pickVoice(lang, voiceGender);
+            if (v) utterance.voice = v;
+        }
         speechSynthesis.speak(utterance);
     }
 }
@@ -631,6 +660,10 @@ function loadSettings() {
         // If no preset matches, it's a custom speed, so uncheck all radios.
         voiceSpeedRadios.forEach(radio => radio.checked = false);
     }
+
+    // Load Voice Gender
+    voiceGender = localStorage.getItem('voiceGender') || 'female';
+    voiceGenderRadios.forEach(r => r.checked = (r.value === voiceGender));
 }
 
 function toggleTheme() {
@@ -645,10 +678,14 @@ function toggleTheme() {
 function testVoiceSpeed(speed, lang) {
     const testPhrase = lang === 'si' ? 'කටහඬ වේගය පරීක්ෂා කිරීම' : 'Testing voice speed';
     if ('speechSynthesis' in window) {
-        speechSynthesis.cancel(); // Stop any currently playing speech
+        speechSynthesis.cancel();
         const utterance = new SpeechSynthesisUtterance(testPhrase);
         utterance.lang = lang;
         utterance.rate = speed;
+        if (isPremium) {
+            const v = pickVoice(lang, voiceGender);
+            if (v) utterance.voice = v;
+        }
         speechSynthesis.speak(utterance);
     }
 }
@@ -704,6 +741,9 @@ function updateUIForPremiumStatus() {
         dictateBtn.title = "Speak to Type (Dictation)";
         unlockPremiumBtn.style.display = 'none';
         logoutPremiumBtn.classList.remove('hidden');
+        if (voiceGenderSection) voiceGenderSection.classList.remove('hidden');
+        // Enable gender radios
+        voiceGenderRadios.forEach(r => r.disabled = false);
     } else {
         const badge = document.getElementById('premiumBadge');
         if (badge) {
@@ -713,6 +753,9 @@ function updateUIForPremiumStatus() {
         dictateBtn.title = "Unlock Premium to use Dictation";
         unlockPremiumBtn.style.display = 'block';
         logoutPremiumBtn.classList.add('hidden');
+        if (voiceGenderSection) voiceGenderSection.classList.add('hidden');
+        // Disable gender radios
+        voiceGenderRadios.forEach(r => r.disabled = true);
     }
 }
 
@@ -737,6 +780,22 @@ function logoutPremium() {
     localStorage.removeItem('isPremium');
     updateUIForPremiumStatus();
     showToastNotification('You have logged out from premium.');
+}
+
+// Pick a voice by language & gender
+function pickVoice(lang, gender) {
+    if (!availableVoices.length) return null;
+    // Try to find exact match
+    let voices = availableVoices.filter(v => v.lang.startsWith(lang) && v.gender === gender);
+    if (!voices.length) {
+        // Some browsers don't set gender, so try by name
+        voices = availableVoices.filter(v => v.lang.startsWith(lang) && v.name.toLowerCase().includes(gender));
+    }
+    if (!voices.length) {
+        // Fallback: any voice for lang
+        voices = availableVoices.filter(v => v.lang.startsWith(lang));
+    }
+    return voices[0] || availableVoices[0];
 }
 
 // Initialize the app when DOM is loaded

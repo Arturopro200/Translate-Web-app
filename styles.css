@@ -1320,3 +1320,40 @@ body.dark-mode .history-item .timestamp {
     display: block;
     opacity: 1;
 }
+
+/* Voice Gender Options */
+.voice-gender-section {
+    margin-bottom: 18px;
+}
+.voice-gender-options {
+    display: flex;
+    gap: 18px;
+    margin-top: 8px;
+}
+.voice-gender-options label {
+    font-size: 1rem;
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    opacity: 1;
+    transition: opacity 0.2s;
+}
+.voice-gender-options input[type="radio"] {
+    accent-color: var(--primary-color);
+    width: 1.1em;
+    height: 1.1em;
+    margin-right: 4px;
+}
+.voice-gender-section.disabled, .voice-gender-section.hidden {
+    display: none !important;
+}
+@media (max-width: 480px) {
+    .voice-gender-options label {
+        font-size: 0.95rem;
+    }
+    .voice-gender-options {
+        gap: 10px;
+    }
+}
