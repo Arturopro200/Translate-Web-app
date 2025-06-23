@@ -63,6 +63,7 @@ let voiceVolume = 1;
 let history = []; 
 let isPremium = false;
 const ACTIVATION_KEY = '123456789';
+let favorites = [];
 
 // --- LANGUAGES OBJECT (without "Detect Language") ---
 const LANGUAGES = {
@@ -503,6 +504,47 @@ function setupEventListeners() {
             URL.revokeObjectURL(url);
         });
     }
+
+    const batchTranslateBtn = document.getElementById('batchTranslateBtn');
+    if (batchTranslateBtn) {
+        batchTranslateBtn.addEventListener('click', async () => {
+            if (!isPremium) {
+                showToastNotification('This is a premium feature. Please activate.');
+                return;
+            }
+            const lines = sourceText.value.split(/\r?\n/).map(l => l.trim()).filter(l => l);
+            if (lines.length === 0) {
+                showToastNotification('Enter text to batch translate.');
+                return;
+            }
+            batchTranslateBtn.disabled = true;
+            batchTranslateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            let results = [];
+            for (let i = 0; i < lines.length; i++) {
+                try {
+                    const translated = await performTranslation(lines[i], sourceLanguage.value, targetLanguage.value);
+                    results.push(translated);
+                } catch (e) {
+                    results.push('[Error]');
+                }
+            }
+            targetText.value = results.join('\n');
+            batchTranslateBtn.innerHTML = '<i class="fas fa-layer-group"></i> Batch';
+            batchTranslateBtn.disabled = false;
+        });
+    }
+
+    const showFavoritesBtn = document.getElementById('showFavoritesBtn');
+    if (showFavoritesBtn) {
+        showFavoritesBtn.addEventListener('click', () => {
+            if (!isPremium) {
+                showToastNotification('This is a premium feature. Please activate.');
+                return;
+            }
+            showFavoritesBtn.classList.toggle('active');
+            loadHistory();
+        });
+    }
 }
 
 // Debounce function
@@ -664,37 +706,58 @@ function addToHistory(sourceText, targetText, sourceLang, targetLang) {
 function loadHistory() {
     const historyCookie = getCookie('translationHistory');
     history = historyCookie ? JSON.parse(historyCookie) : [];
-    
+    favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    const showFavoritesBtn = document.getElementById('showFavoritesBtn');
+    const showOnlyFavorites = showFavoritesBtn && showFavoritesBtn.classList.contains('active');
     translationHistory.innerHTML = '';
-    
-    if (history.length === 0) {
+    let displayHistory = history;
+    if (showOnlyFavorites) {
+        displayHistory = history.filter(item => favorites.includes(item.id));
+    }
+    if (displayHistory.length === 0) {
         translationHistory.innerHTML = '<p style="text-align: center; color: #999; font-style: italic;">No translation history yet</p>';
         clearHistoryBtn.style.display = 'none';
         return;
     }
-    
     clearHistoryBtn.style.display = 'inline-flex';
-    history.forEach(item => {
+    displayHistory.forEach(item => {
         const historyItem = document.createElement('div');
         historyItem.className = 'history-item';
-        
+        // Favorite button
+        const favBtn = document.createElement('button');
+        favBtn.className = 'favorite-btn' + (favorites.includes(item.id) ? ' favorited' : '');
+        favBtn.innerHTML = '<i class="fas fa-star"></i>';
+        favBtn.title = isPremium ? (favorites.includes(item.id) ? 'Unfavorite' : 'Favorite') : 'Premium Only';
+        favBtn.disabled = !isPremium;
+        favBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (!isPremium) {
+                showToastNotification('This is a premium feature. Please activate.');
+                return;
+            }
+            if (favorites.includes(item.id)) {
+                favorites = favorites.filter(favId => favId !== item.id);
+            } else {
+                favorites.push(item.id);
+            }
+            localStorage.setItem('favorites', JSON.stringify(favorites));
+            loadHistory();
+        });
         // Get full language names from codes
         const sourceLangName = LANGUAGES[item.sourceLang] || 'Unknown';
         const targetLangName = LANGUAGES[item.targetLang] || 'Unknown';
-        
-        historyItem.innerHTML = `            <div class="lang-pair">${sourceLangName} → ${targetLangName}</div>
+        historyItem.appendChild(favBtn);
+        historyItem.innerHTML += `            <div class="lang-pair">${sourceLangName} → ${targetLangName}</div>
             <div class="source-text">${item.sourceText}</div>
             <div class="target-text">${item.targetText}</div>
             <div class="timestamp">${item.timestamp}</div>
         `;
-        
         historyItem.addEventListener('click', () => {
             sourceText.value = item.sourceText;
             sourceLanguage.value = item.sourceLang;
             targetLanguage.value = item.targetLang;
             translate();
         });
-        
         translationHistory.appendChild(historyItem);
     });
 }
@@ -789,6 +852,7 @@ function showCharLimitWarning() {
 function executeClearHistory() {
     history = [];
     eraseCookie('translationHistory'); // Erase the cookie
+    localStorage.removeItem('favorites');
     loadHistory();
     confirmModal.style.display = 'none';
     showToastNotification('History cleared successfully!');
@@ -943,6 +1007,8 @@ function updateUIForPremiumStatus() {
     const aiVoiceTargetBtn = document.getElementById('aiVoiceTarget');
     const adBanner = document.getElementById('adBanner');
     const exportHistoryBtn = document.getElementById('exportHistoryBtn');
+    const batchTranslateBtn = document.getElementById('batchTranslateBtn');
+    const showFavoritesBtn = document.getElementById('showFavoritesBtn');
     if (isPremium) {
         dictateBtn.classList.remove('locked');
         dictateBtn.title = "Speak to Type (Dictation)";
@@ -976,6 +1042,14 @@ function updateUIForPremiumStatus() {
         if (exportHistoryBtn) {
             exportHistoryBtn.disabled = false;
             exportHistoryBtn.title = 'Export History';
+        }
+        if (batchTranslateBtn) {
+            batchTranslateBtn.disabled = false;
+            batchTranslateBtn.title = 'Batch Translate';
+        }
+        if (showFavoritesBtn) {
+            showFavoritesBtn.disabled = false;
+            showFavoritesBtn.title = 'Show Favorites';
         }
     } else {
         dictateBtn.classList.add('locked');
@@ -1011,6 +1085,14 @@ function updateUIForPremiumStatus() {
         if (exportHistoryBtn) {
             exportHistoryBtn.disabled = true;
             exportHistoryBtn.title = 'Premium Only';
+        }
+        if (batchTranslateBtn) {
+            batchTranslateBtn.disabled = true;
+            batchTranslateBtn.title = 'Premium Only';
+        }
+        if (showFavoritesBtn) {
+            showFavoritesBtn.disabled = true;
+            showFavoritesBtn.title = 'Premium Only';
         }
     }
 }

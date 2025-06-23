@@ -1552,3 +1552,76 @@ body.dark-mode .history-item .timestamp {
     border-color: #ccc;
     cursor: not-allowed;
 }
+
+.batch-translate-btn {
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #8e44ad;
+    transition: background 0.2s, color 0.2s;
+    font-size: 1.1rem;
+    margin-top: 2px;
+}
+.batch-translate-btn:hover {
+    background: color-mix(in srgb, #8e44ad 15%, transparent);
+    color: #5e3370;
+}
+.batch-translate-btn:disabled {
+    color: #aaa;
+    background: #f5f5f5;
+    cursor: not-allowed;
+}
+@media (max-width: 480px) {
+    .batch-translate-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 1rem;
+    }
+}
+
+.favorite-btn {
+    background: transparent;
+    border: none;
+    color: #f1c40f;
+    font-size: 1.2rem;
+    cursor: pointer;
+    margin-right: 8px;
+    transition: color 0.2s;
+    vertical-align: middle;
+}
+.favorite-btn.favorited {
+    color: #e67e22;
+}
+.favorite-btn:disabled {
+    color: #ccc;
+    cursor: not-allowed;
+}
+.show-favorites-btn {
+    background-color: #fffbe6;
+    color: #e67e22;
+    border: 1px solid #e67e22;
+    padding: 8px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+}
+.show-favorites-btn.active, .show-favorites-btn:hover:not(:disabled) {
+    background-color: #e67e22;
+    color: #fff;
+}
+.show-favorites-btn:disabled {
+    color: #aaa;
+    background: #f5f5f5;
+    border-color: #ccc;
+    cursor: not-allowed;
+}
