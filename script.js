@@ -370,6 +370,12 @@ function setupEventListeners() {
 
     if (aiVoiceSourceBtn) {
         aiVoiceSourceBtn.addEventListener('click', async () => {
+            if (!isPremium) {
+                activationModal.style.display = 'block';
+                activationKeyInput.focus();
+                showToastNotification('This is a premium feature. Please activate.');
+                return;
+            }
             aiVoiceSourceBtn.disabled = true;
             aiVoiceSourceBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
             await playAIVoice(sourceText.value);
@@ -379,6 +385,12 @@ function setupEventListeners() {
     }
     if (aiVoiceTargetBtn) {
         aiVoiceTargetBtn.addEventListener('click', async () => {
+            if (!isPremium) {
+                activationModal.style.display = 'block';
+                activationKeyInput.focus();
+                showToastNotification('This is a premium feature. Please activate.');
+                return;
+            }
             aiVoiceTargetBtn.disabled = true;
             aiVoiceTargetBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
             await playAIVoice(targetText.value);
@@ -799,16 +811,9 @@ function checkPremiumStatus() {
 
 function updateUIForPremiumStatus() {
     updateCharCounter();
+    const aiVoiceSourceBtn = document.getElementById('aiVoiceSource');
+    const aiVoiceTargetBtn = document.getElementById('aiVoiceTarget');
     if (isPremium) {
-        // Add premium badge if it doesn't exist
-        if (!document.getElementById('premiumBadge')) {
-            const badge = document.createElement('span');
-            badge.id = 'premiumBadge';
-            badge.className = 'premium-badge';
-            badge.textContent = 'Premium';
-            headerTitle.appendChild(badge);
-        }
-        
         dictateBtn.classList.remove('locked');
         dictateBtn.title = "Speak to Type (Dictation)";
         unlockPremiumBtn.style.display = 'none';
@@ -821,11 +826,13 @@ function updateUIForPremiumStatus() {
             if (voiceSelect) voiceSelect.disabled = false;
             if (voiceSelectDisabledText) voiceSelectDisabledText.style.display = 'none';
         }
-    } else {
-        const badge = document.getElementById('premiumBadge');
-        if (badge) {
-            badge.remove();
+        if (aiVoiceSourceBtn) {
+            aiVoiceSourceBtn.title = "AI Voice (ElevenLabs)";
         }
+        if (aiVoiceTargetBtn) {
+            aiVoiceTargetBtn.title = "AI Voice (ElevenLabs)";
+        }
+    } else {
         dictateBtn.classList.add('locked');
         dictateBtn.title = "Unlock Premium to use Dictation";
         unlockPremiumBtn.style.display = 'block';
@@ -838,6 +845,12 @@ function updateUIForPremiumStatus() {
             voiceSelectSection.classList.add('disabled');
             if (voiceSelect) voiceSelect.disabled = true;
             if (voiceSelectDisabledText) voiceSelectDisabledText.style.display = 'block';
+        }
+        if (aiVoiceSourceBtn) {
+            aiVoiceSourceBtn.title = "AI Voice (Premium Only)";
+        }
+        if (aiVoiceTargetBtn) {
+            aiVoiceTargetBtn.title = "AI Voice (Premium Only)";
         }
     }
 }
