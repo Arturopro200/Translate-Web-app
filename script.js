@@ -325,6 +325,67 @@ function setupEventListeners() {
             }
         });
     });
+
+    const aiVoiceSourceBtn = document.getElementById('aiVoiceSource');
+    const aiVoiceTargetBtn = document.getElementById('aiVoiceTarget');
+
+    // ElevenLabs API conf
+    const ELEVENLABS_API_KEY = 'sk_10d820e6a1714e06d26daccc8db6feac7c0b511d685d17f1'; 
+    const ELEVENLABS_VOICE_ID = 'EXAVITQu4vr4xnSDxMaL'; 
+    const ELEVENLABS_URL = `https://api.elevenlabs.io/v1/text-to-speech/${ELEVENLABS_VOICE_ID}`;
+
+    async function playAIVoice(text) {
+        if (!text || !ELEVENLABS_API_KEY) {
+            showToastNotification('AI Voice unavailable.');
+            return;
+        }
+        // Only support English for demo
+        if (!/^[\x00-\x7F]+$/.test(text)) {
+            showToastNotification('AI Voice: Only English supported in demo.');
+            return;
+        }
+        try {
+            const response = await fetch(ELEVENLABS_URL, {
+                method: 'POST',
+                headers: {
+                    'xi-api-key': ELEVENLABS_API_KEY,
+                    'Content-Type': 'application/json',
+                    'Accept': 'audio/mpeg',
+                },
+                body: JSON.stringify({
+                    text,
+                    model_id: 'eleven_monolingual_v1',
+                    voice_settings: { stability: 0.5, similarity_boost: 0.7 }
+                })
+            });
+            if (!response.ok) throw new Error('AI Voice API error');
+            const audioBlob = await response.blob();
+            const audioUrl = URL.createObjectURL(audioBlob);
+            const audio = new Audio(audioUrl);
+            audio.play();
+        } catch (err) {
+            showToastNotification('AI Voice error.');
+        }
+    }
+
+    if (aiVoiceSourceBtn) {
+        aiVoiceSourceBtn.addEventListener('click', async () => {
+            aiVoiceSourceBtn.disabled = true;
+            aiVoiceSourceBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            await playAIVoice(sourceText.value);
+            aiVoiceSourceBtn.innerHTML = '<i class="fas fa-robot"></i>';
+            aiVoiceSourceBtn.disabled = false;
+        });
+    }
+    if (aiVoiceTargetBtn) {
+        aiVoiceTargetBtn.addEventListener('click', async () => {
+            aiVoiceTargetBtn.disabled = true;
+            aiVoiceTargetBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            await playAIVoice(targetText.value);
+            aiVoiceTargetBtn.innerHTML = '<i class="fas fa-robot"></i>';
+            aiVoiceTargetBtn.disabled = false;
+        });
+    }
 }
 
 // Debounce function

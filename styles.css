@@ -1397,3 +1397,35 @@ body.dark-mode .history-item .timestamp {
         border-radius: 6px;
     }
 }
+
+.ai-voice-btn {
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #6c63ff;
+    transition: background 0.2s, color 0.2s;
+    font-size: 1.1rem;
+    margin-top: 2px;
+}
+.ai-voice-btn:hover {
+    background: color-mix(in srgb, #6c63ff 15%, transparent);
+    color: #4834d4;
+}
+.ai-voice-btn:disabled {
+    color: #aaa;
+    background: #f5f5f5;
+    cursor: not-allowed;
+}
+@media (max-width: 480px) {
+    .ai-voice-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 1rem;
+    }
+}
