@@ -545,6 +545,51 @@ function setupEventListeners() {
             loadHistory();
         });
     }
+
+    const downloadPdfBtn = document.getElementById('downloadPdfBtn');
+    const downloadTxtBtn = document.getElementById('downloadTxtBtn');
+    if (downloadTxtBtn) {
+        downloadTxtBtn.addEventListener('click', () => {
+            if (!isPremium) {
+                showToastNotification('This is a premium feature. Please activate.');
+                return;
+            }
+            if (!targetText.value.trim()) {
+                showToastNotification('No translation to download.');
+                return;
+            }
+            const blob = new Blob([targetText.value], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'translation.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+    }
+    if (downloadPdfBtn) {
+        downloadPdfBtn.addEventListener('click', () => {
+            if (!isPremium) {
+                showToastNotification('This is a premium feature. Please activate.');
+                return;
+            }
+            if (!targetText.value.trim()) {
+                showToastNotification('No translation to download.');
+                return;
+            }
+            // Simple PDF: open print dialog with translation (for demo)
+            const win = window.open('', '', 'width=600,height=800');
+            win.document.write('<html><head><title>Translation PDF</title></head><body>');
+            win.document.write('<h2>Translation</h2>');
+            win.document.write('<pre style="font-size:1.1rem;">' + targetText.value.replace(/</g, '&lt;') + '</pre>');
+            win.document.write('</body></html>');
+            win.document.close();
+            win.focus();
+            win.print();
+        });
+    }
 }
 
 // Debounce function
@@ -1009,6 +1054,8 @@ function updateUIForPremiumStatus() {
     const exportHistoryBtn = document.getElementById('exportHistoryBtn');
     const batchTranslateBtn = document.getElementById('batchTranslateBtn');
     const showFavoritesBtn = document.getElementById('showFavoritesBtn');
+    const downloadPdfBtn = document.getElementById('downloadPdfBtn');
+    const downloadTxtBtn = document.getElementById('downloadTxtBtn');
     if (isPremium) {
         dictateBtn.classList.remove('locked');
         dictateBtn.title = "Speak to Type (Dictation)";
@@ -1050,6 +1097,14 @@ function updateUIForPremiumStatus() {
         if (showFavoritesBtn) {
             showFavoritesBtn.disabled = false;
             showFavoritesBtn.title = 'Show Favorites';
+        }
+        if (downloadPdfBtn) {
+            downloadPdfBtn.disabled = false;
+            downloadPdfBtn.title = 'Download as PDF';
+        }
+        if (downloadTxtBtn) {
+            downloadTxtBtn.disabled = false;
+            downloadTxtBtn.title = 'Download as TXT';
         }
     } else {
         dictateBtn.classList.add('locked');
@@ -1093,6 +1148,14 @@ function updateUIForPremiumStatus() {
         if (showFavoritesBtn) {
             showFavoritesBtn.disabled = true;
             showFavoritesBtn.title = 'Premium Only';
+        }
+        if (downloadPdfBtn) {
+            downloadPdfBtn.disabled = true;
+            downloadPdfBtn.title = 'Premium Only';
+        }
+        if (downloadTxtBtn) {
+            downloadTxtBtn.disabled = true;
+            downloadTxtBtn.title = 'Premium Only';
         }
     }
 }
