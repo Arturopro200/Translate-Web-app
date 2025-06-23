@@ -103,6 +103,22 @@ header p {
     color: var(--text-light);
 }
 
+.premium-badge {
+    background-color: #f1c40f;
+    color: #333;
+    padding: 3px 8px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    border-radius: 5px;
+    margin-left: 10px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.hidden {
+    display: none !important;
+}
+
 .settings-btn {
     position: absolute;
     top: -10px;
@@ -692,6 +708,16 @@ body.dark-mode .swap-btn i {
     background-color: color-mix(in srgb, #28a745 15%, transparent);
 }
 
+.dictate-btn.locked {
+    cursor: not-allowed;
+    color: var(--border-color);
+}
+
+.dictate-btn.locked:hover {
+    background-color: transparent;
+    color: var(--border-color);
+}
+
 .dictate-btn.listening {
     color: #e74c3c; /* Red color for listening state */
     background-color: color-mix(in srgb, #e74c3c 15%, transparent);
@@ -820,4 +846,65 @@ body.dark-mode .history-item .timestamp {
     100% {
         box-shadow: 0 0 0 0 color-mix(in srgb, #e74c3c 0%, transparent);
     }
+}
+
+.modal-button-primary {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.modal-button-primary:hover {
+    background-color: var(--hover-color);
+}
+
+.unlock-premium-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: color-mix(in srgb, var(--primary-color) 15%, transparent);
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.unlock-premium-btn:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.unlock-premium-btn i {
+    margin-right: 8px;
+}
+
+.activation-input-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.activation-input-group input {
+    flex-grow: 1;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+}
+
+.activation-error-msg {
+    color: #e74c3c;
+    font-size: 0.9rem;
+    margin-top: 15px;
+    height: 1.2em; /* Reserve space to prevent layout shift */
 } 

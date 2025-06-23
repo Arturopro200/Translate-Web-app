@@ -46,11 +46,20 @@ const customSpeedSlider = document.getElementById('customSpeedSlider');
 const customSpeedValue = document.getElementById('customSpeedValue');
 const testCustomSpeedBtn = document.getElementById('testCustomSpeedBtn');
 
+// --- PREMIUM FEATURE ELEMENTS ---
+const unlockPremiumBtn = document.getElementById('unlockPremiumBtn');
+const activationModal = document.getElementById('activationModal');
+const closeActivationModal = document.getElementById('closeActivationModal');
+const activationKeyInput = document.getElementById('activationKeyInput');
+const submitActivationKey = document.getElementById('submitActivationKey');
+const activationError = document.getElementById('activationError');
+const headerTitle = document.querySelector('header h1');
+
 // Global state
 let voiceSpeed = 1;
-
-// Translation history - now loaded from cookies
 let history = []; 
+let isPremium = false;
+const ACTIVATION_KEY = '123456789';
 
 // --- LANGUAGES OBJECT (without "Detect Language") ---
 const LANGUAGES = {
@@ -73,6 +82,7 @@ const LANGUAGES = {
 
 // Initialize the app
 function init() {
+    checkPremiumStatus();
     populateLanguageDropdowns();
     loadHistory();
     setupEventListeners();
@@ -190,6 +200,24 @@ function setupEventListeners() {
         });
     });
 
+    // --- PREMIUM FEATURE LISTENERS ---
+    unlockPremiumBtn.addEventListener('click', () => {
+        activationModal.style.display = 'block';
+        activationKeyInput.focus();
+    });
+
+    closeActivationModal.addEventListener('click', () => {
+        activationModal.style.display = 'none';
+    });
+
+    submitActivationKey.addEventListener('click', activatePremium);
+    
+    activationKeyInput.addEventListener('keyup', (event) => {
+        if (event.key === 'Enter') {
+            activatePremium();
+        }
+    });
+
     // --- SPEECH RECOGNITION (DICTATION) ---
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     let recognition;
@@ -242,6 +270,13 @@ function setupEventListeners() {
     }
 
     function toggleDictation() {
+        if (!isPremium) {
+            activationModal.style.display = 'block';
+            activationKeyInput.focus();
+            showToastNotification('This is a premium feature. Please activate.');
+            return;
+        }
+
         if (dictateBtn.classList.contains('listening')) {
             recognition.stop();
         } else {
@@ -493,7 +528,8 @@ function closeModal() {
 // Character counter function
 function updateCharCounter() {
     const currentLength = sourceText.value.length;
-    const maxLength = sourceText.maxLength;
+    const maxLength = isPremium ? 10000 : 500;
+    sourceText.maxLength = maxLength;
     charCounter.textContent = `${currentLength} / ${maxLength}`;
 }
 
@@ -602,6 +638,53 @@ function getCookie(name) {
 
 function eraseCookie(name) {   
     document.cookie = name+'=; Max-Age=-99999999; path=/;';
+}
+
+// --- PREMIUM FEATURE FUNCTIONS ---
+function checkPremiumStatus() {
+    if (localStorage.getItem('isPremium') === 'true') {
+        isPremium = true;
+    }
+    updateUIForPremiumStatus();
+}
+
+function updateUIForPremiumStatus() {
+    updateCharCounter(); // Update counter based on premium status
+
+    if (isPremium) {
+        // Add premium badge if it doesn't exist
+        if (!document.getElementById('premiumBadge')) {
+            const badge = document.createElement('span');
+            badge.id = 'premiumBadge';
+            badge.className = 'premium-badge';
+            badge.textContent = 'Premium';
+            headerTitle.appendChild(badge);
+        }
+        
+        dictateBtn.classList.remove('locked');
+        dictateBtn.title = "Speak to Type (Dictation)";
+        unlockPremiumBtn.style.display = 'none';
+    } else {
+        dictateBtn.classList.add('locked');
+        dictateBtn.title = "Unlock Premium to use Dictation";
+        unlockPremiumBtn.style.display = 'block';
+    }
+}
+
+function activatePremium() {
+    const enteredKey = activationKeyInput.value;
+    if (enteredKey === ACTIVATION_KEY) {
+        isPremium = true;
+        localStorage.setItem('isPremium', 'true');
+        updateUIForPremiumStatus();
+        activationModal.style.display = 'none';
+        activationKeyInput.value = '';
+        activationError.textContent = '';
+        showToastNotification('Premium features activated successfully!');
+    } else {
+        activationError.textContent = 'Invalid activation key. Please try again.';
+        activationKeyInput.value = '';
+    }
 }
 
 // Initialize the app when DOM is loaded

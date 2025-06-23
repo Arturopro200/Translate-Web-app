@@ -151,6 +151,12 @@
             </div>
         </div>
         <div class="settings-section">
+            <h4>Premium Features</h4>
+            <button id="unlockPremiumBtn" class="unlock-premium-btn">
+                <i class="fas fa-lock-open"></i> Unlock Premium
+            </button>
+        </div>
+        <div class="settings-section">
             <h4>Voice speed</h4>
             <div class="voice-speed-options">
                 <div class="voice-speed-option">
@@ -204,6 +210,20 @@
                     <i class="fas fa-play"></i>
                 </button>
             </div>
+        </div>
+    </div>
+
+    <!-- Activation Modal -->
+    <div id="activationModal" class="modal">
+        <div class="modal-content">
+            <span id="closeActivationModal" class="close-modal-span">&times;</span>
+            <h3>Unlock Premium Features</h3>
+            <p>Enter your activation key to unlock premium features like unlimited characters and voice dictation.</p>
+            <div class="activation-input-group">
+                <input type="password" id="activationKeyInput" placeholder="Enter Activation Key">
+                <button id="submitActivationKey" class="modal-button-primary">Activate</button>
+            </div>
+            <p id="activationError" class="activation-error-msg"></p>
         </div>
     </div>
 
