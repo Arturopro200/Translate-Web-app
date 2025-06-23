@@ -1261,3 +1261,10 @@ function bindVoiceSpeedTestBtns() {
         btn._voiceTestHandler = handler;
     });
 }
+
+// Register service worker for PWA support
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('service-worker.js');
+  });
+}

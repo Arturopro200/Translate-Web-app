@@ -1,0 +1,21 @@
+{
+  "name": "Translate Web App",
+  "short_name": "Translate",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#7B4BFF",
+  "theme_color": "#7B4BFF",
+  "description": "A modern, mobile-optimized translation app with premium features.",
+  "icons": [
+    {
+      "src": "logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+} 
