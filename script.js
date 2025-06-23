@@ -1261,3 +1261,19 @@ function bindVoiceSpeedTestBtns() {
         btn._voiceTestHandler = handler;
     });
 }
+
+// Register service worker for PWA support
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('service-worker.js');
+  });
+}
+
+// Listen for service worker update notification
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.addEventListener('message', event => {
+    if (event.data && event.data.type === 'SW_UPDATED') {
+      showToastNotification('අලුත් version එකක් තියෙනවා! Refresh කරන්න.');
+    }
+  });
+}
