@@ -61,6 +61,12 @@
                             <button id="aiVoiceSource" class="ai-voice-btn" title="AI Voice (ElevenLabs)">
                                 <i class="fas fa-robot"></i>
                             </button>
+                            <button id="uploadFileBtn" class="upload-file-btn" title="Upload PDF or TXT (Premium)">
+                                <i class="fas fa-file-upload"></i>
+                            </button>
+                            <button id="batchTranslateBtn" class="batch-translate-btn" title="Batch Translate (Premium)">
+                                <i class="fas fa-layer-group"></i> Batch
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -78,6 +84,12 @@
                             <button id="aiVoiceTarget" class="ai-voice-btn" title="AI Voice (ElevenLabs)">
                                 <i class="fas fa-robot"></i>
                             </button>
+                            <button id="downloadPdfBtn" class="download-pdf-btn" title="Download as PDF (Premium)">
+                                <i class="fas fa-file-pdf"></i>
+                            </button>
+                            <button id="downloadTxtBtn" class="download-txt-btn" title="Download as TXT (Premium)">
+                                <i class="fas fa-file-alt"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -93,15 +105,29 @@
             <div class="history-section">
                 <div class="history-header">
                     <h3>Recent Translations</h3>
-                    <button id="clearHistoryBtn" class="clear-history-btn" title="Clear History">
-                        <i class="fas fa-trash-alt"></i> Clear All
-                    </button>
+                    <div style="display: flex; gap: 8px;">
+                        <button id="showFavoritesBtn" class="show-favorites-btn" title="Show Favorites (Premium)">
+                            <i class="fas fa-star"></i> Favorites
+                        </button>
+                        <button id="exportHistoryBtn" class="export-history-btn" title="Export History (Premium)">
+                            <i class="fas fa-file-export"></i> Export
+                        </button>
+                        <button id="clearHistoryBtn" class="clear-history-btn" title="Clear History">
+                            <i class="fas fa-trash-alt"></i> Clear All
+                        </button>
+                    </div>
                 </div>
                 <div id="translationHistory" class="history-list">
                     <!-- Translation history will be populated here -->
                 </div>
             </div>
         </main>
+    </div>
+
+    <div id="adBanner" class="ad-banner">
+        <a href="https://janithsuraweera.github.io/Portfolio/#" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none; display: block;">
+            <span class="ad-label">Ad</span> 🚀 Upgrade to Premium for an Ad-Free Experience!
+        </a>
     </div>
 
     <footer>
@@ -177,41 +203,16 @@
                     <label>
                         <input type="radio" name="voiceSpeed" value="1" checked> Normal
                     </label>
-                    <button class="test-speed-btn" data-speed="1" title="Test Speed">
-                        <i class="fas fa-play"></i>
-                    </button>
                 </div>
                 <div class="voice-speed-option">
                     <label>
                         <input type="radio" name="voiceSpeed" value="0.8"> Slow
                     </label>
-                    <button class="test-speed-btn" data-speed="0.8" title="Test Speed">
-                        <i class="fas fa-play"></i>
-                    </button>
-                </div>
-                <div class="voice-speed-option">
-                    <label>
-                        <input type="radio" name="voiceSpeed" value="0.5"> Slower
-                    </label>
-                    <button class="test-speed-btn" data-speed="0.5" title="Test Speed">
-                        <i class="fas fa-play"></i>
-                    </button>
                 </div>
                 <div class="voice-speed-option">
                     <label>
                         <input type="radio" name="voiceSpeed" value="1.5"> Fast
                     </label>
-                    <button class="test-speed-btn" data-speed="1.5" title="Test Speed">
-                        <i class="fas fa-play"></i>
-                    </button>
-                </div>
-                <div class="voice-speed-option">
-                    <label>
-                        <input type="radio" name="voiceSpeed" value="2"> Faster
-                    </label>
-                    <button class="test-speed-btn" data-speed="2" title="Test Speed">
-                        <i class="fas fa-play"></i>
-                    </button>
                 </div>
             </div>
         </div>
@@ -232,6 +233,18 @@
             </select>
             <span class="voice-select-disabled-text">Premium only: Activate to select a custom voice</span>
         </div>
+        <div class="settings-section">
+            <h4>Custom Voice Settings <span class="premium-badge">Premium</span></h4>
+            <div class="custom-voice-settings">
+                <label for="voicePitchSlider">Pitch: <span id="voicePitchValue">1.0</span></label>
+                <input type="range" id="voicePitchSlider" min="0" max="2" value="1" step="0.01">
+                <label for="voiceVolumeSlider">Volume: <span id="voiceVolumeValue">1.0</span></label>
+                <input type="range" id="voiceVolumeSlider" min="0" max="1" value="1" step="0.01">
+                <button id="testVoiceSettingsBtn" class="test-voice-btn" title="Test Voice Settings">
+                    <i class="fas fa-play"></i> Test Voice
+                </button>
+            </div>
+        </div>
     </div>
 
     <!-- Activation Modal -->
@@ -247,6 +260,8 @@
             <p id="activationError" class="activation-error-msg"></p>
         </div>
     </div>
+
+    <div id="toastNotification" class="toast-notification"></div>
 
     <script src="script.js"></script>
 </body>

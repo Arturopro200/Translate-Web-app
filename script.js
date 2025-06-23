@@ -58,9 +58,12 @@ const logoutPremiumBtn = document.getElementById('logoutPremiumBtn');
 
 // Global state
 let voiceSpeed = 1;
+let voicePitch = 1;
+let voiceVolume = 1;
 let history = []; 
 let isPremium = false;
-const ACTIVATION_KEY = '123456789';
+const ACTIVATION_KEYS = ['123456789', 'janith123'];
+let favorites = [];
 
 // --- LANGUAGES OBJECT (without "Detect Language") ---
 const LANGUAGES = {
@@ -212,13 +215,7 @@ function setupEventListeners() {
     });
 
     // Voice Speed Test Buttons
-    const voiceSpeedTestBtns = document.querySelectorAll('.test-speed-btn');
-    voiceSpeedTestBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const speed = parseFloat(e.currentTarget.dataset.speed);
-            testVoiceSpeed(speed, sourceLanguage.value);
-        });
-    });
+    bindVoiceSpeedTestBtns();
 
     // --- PREMIUM FEATURE LISTENERS ---
     unlockPremiumBtn.addEventListener('click', () => {
@@ -398,6 +395,195 @@ function setupEventListeners() {
             aiVoiceTargetBtn.disabled = false;
         });
     }
+
+    const uploadFileBtn = document.getElementById('uploadFileBtn');
+    if (uploadFileBtn) {
+        uploadFileBtn.addEventListener('click', () => {
+            if (!isPremium) {
+                activationModal.style.display = 'block';
+                activationKeyInput.focus();
+                showToastNotification('This is a premium feature. Please activate.');
+                return;
+            }
+            // Create file input dynamically
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = '.txt,application/pdf';
+            fileInput.style.display = 'none';
+            document.body.appendChild(fileInput);
+            fileInput.addEventListener('change', async (e) => {
+                const file = fileInput.files[0];
+                if (!file) return;
+                if (file.type === 'text/plain' || file.name.endsWith('.txt')) {
+                    // TXT file
+                    const reader = new FileReader();
+                    reader.onload = function(evt) {
+                        sourceText.value = evt.target.result;
+                        updateCharCounter();
+                    };
+                    reader.readAsText(file);
+                } else if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
+                    // PDF file
+                    showToastNotification('PDF parsing requires internet. Please use TXT for now or integrate pdf.js.');
+                    // Placeholder: You can integrate pdf.js here for real PDF parsing
+                } else {
+                    showToastNotification('Unsupported file type. Please upload a PDF or TXT file.');
+                }
+                document.body.removeChild(fileInput);
+            });
+            fileInput.click();
+        });
+    }
+
+    // Custom Voice Settings (Pitch & Volume)
+    const voicePitchSlider = document.getElementById('voicePitchSlider');
+    const voicePitchValue = document.getElementById('voicePitchValue');
+    const voiceVolumeSlider = document.getElementById('voiceVolumeSlider');
+    const voiceVolumeValue = document.getElementById('voiceVolumeValue');
+    const testVoiceSettingsBtn = document.getElementById('testVoiceSettingsBtn');
+    if (voicePitchSlider && voicePitchValue) {
+        voicePitchSlider.addEventListener('input', (e) => {
+            voicePitch = parseFloat(e.target.value);
+            voicePitchValue.textContent = voicePitch.toFixed(2);
+            localStorage.setItem('voicePitch', voicePitch);
+        });
+    }
+    if (voiceVolumeSlider && voiceVolumeValue) {
+        voiceVolumeSlider.addEventListener('input', (e) => {
+            voiceVolume = parseFloat(e.target.value);
+            voiceVolumeValue.textContent = voiceVolume.toFixed(2);
+            localStorage.setItem('voiceVolume', voiceVolume);
+        });
+    }
+    if (testVoiceSettingsBtn) {
+        testVoiceSettingsBtn.addEventListener('click', () => {
+            if (!isPremium) {
+                showToastNotification('This is a premium feature. Please activate.');
+                return;
+            }
+            testVoiceSpeed(voiceSpeed, sourceLanguage.value, voicePitch, voiceVolume);
+        });
+    }
+
+    const exportHistoryBtn = document.getElementById('exportHistoryBtn');
+    if (exportHistoryBtn) {
+        exportHistoryBtn.addEventListener('click', () => {
+            if (!isPremium) {
+                showToastNotification('This is a premium feature. Please activate.');
+                return;
+            }
+            if (!history || history.length === 0) {
+                showToastNotification('No history to export.');
+                return;
+            }
+            // Export as CSV
+            let csv = 'Source Text,Target Text,Source Language,Target Language,Timestamp\n';
+            history.forEach(item => {
+                // Escape quotes and commas
+                const src = '"' + (item.sourceText || '').replace(/"/g, '""') + '"';
+                const tgt = '"' + (item.targetText || '').replace(/"/g, '""') + '"';
+                const srcLang = '"' + (item.sourceLang || '') + '"';
+                const tgtLang = '"' + (item.targetLang || '') + '"';
+                const ts = '"' + (item.timestamp || '') + '"';
+                csv += [src, tgt, srcLang, tgtLang, ts].join(',') + '\n';
+            });
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'translation_history.csv';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+    }
+
+    const batchTranslateBtn = document.getElementById('batchTranslateBtn');
+    if (batchTranslateBtn) {
+        batchTranslateBtn.addEventListener('click', async () => {
+            if (!isPremium) {
+                showToastNotification('This is a premium feature. Please activate.');
+                return;
+            }
+            const lines = sourceText.value.split(/\r?\n/).map(l => l.trim()).filter(l => l);
+            if (lines.length === 0) {
+                showToastNotification('Enter text to batch translate.');
+                return;
+            }
+            batchTranslateBtn.disabled = true;
+            batchTranslateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            let results = [];
+            for (let i = 0; i < lines.length; i++) {
+                try {
+                    const translated = await performTranslation(lines[i], sourceLanguage.value, targetLanguage.value);
+                    results.push(translated);
+                } catch (e) {
+                    results.push('[Error]');
+                }
+            }
+            targetText.value = results.join('\n');
+            batchTranslateBtn.innerHTML = '<i class="fas fa-layer-group"></i> Batch';
+            batchTranslateBtn.disabled = false;
+        });
+    }
+
+    const showFavoritesBtn = document.getElementById('showFavoritesBtn');
+    if (showFavoritesBtn) {
+        showFavoritesBtn.addEventListener('click', () => {
+            if (!isPremium) {
+                showToastNotification('This is a premium feature. Please activate.');
+                return;
+            }
+            showFavoritesBtn.classList.toggle('active');
+            loadHistory();
+        });
+    }
+
+    const downloadPdfBtn = document.getElementById('downloadPdfBtn');
+    const downloadTxtBtn = document.getElementById('downloadTxtBtn');
+    if (downloadTxtBtn) {
+        downloadTxtBtn.addEventListener('click', () => {
+            if (!isPremium) {
+                showToastNotification('This is a premium feature. Please activate.');
+                return;
+            }
+            if (!targetText.value.trim()) {
+                showToastNotification('No translation to download.');
+                return;
+            }
+            const blob = new Blob([targetText.value], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'translation.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+    }
+    if (downloadPdfBtn) {
+        downloadPdfBtn.addEventListener('click', () => {
+            if (!isPremium) {
+                showToastNotification('This is a premium feature. Please activate.');
+                return;
+            }
+            if (!targetText.value.trim()) {
+                showToastNotification('No translation to download.');
+                return;
+            }
+            // Simple PDF: open print dialog with translation (for demo)
+            const win = window.open('', '', 'width=600,height=800');
+            win.document.write('<html><head><title>Translation PDF</title></head><body>');
+            win.document.write('<h2>Translation</h2>');
+            win.document.write('<pre style="font-size:1.1rem;">' + targetText.value.replace(/</g, '&lt;') + '</pre>');
+            win.document.write('</body></html>');
+            win.document.close();
+            win.focus();
+            win.print();
+        });
+    }
 }
 
 // Debounce function
@@ -516,6 +702,8 @@ function speakText(text, lang) {
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = lang;
         utterance.rate = voiceSpeed;
+        utterance.pitch = voicePitch;
+        utterance.volume = voiceVolume;
         if (isPremium && selectedVoiceId) {
             const v = pickVoiceById(selectedVoiceId);
             if (v) utterance.voice = v;
@@ -557,37 +745,58 @@ function addToHistory(sourceText, targetText, sourceLang, targetLang) {
 function loadHistory() {
     const historyCookie = getCookie('translationHistory');
     history = historyCookie ? JSON.parse(historyCookie) : [];
-    
+    favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    const showFavoritesBtn = document.getElementById('showFavoritesBtn');
+    const showOnlyFavorites = showFavoritesBtn && showFavoritesBtn.classList.contains('active');
     translationHistory.innerHTML = '';
-    
-    if (history.length === 0) {
+    let displayHistory = history;
+    if (showOnlyFavorites) {
+        displayHistory = history.filter(item => favorites.includes(item.id));
+    }
+    if (displayHistory.length === 0) {
         translationHistory.innerHTML = '<p style="text-align: center; color: #999; font-style: italic;">No translation history yet</p>';
         clearHistoryBtn.style.display = 'none';
         return;
     }
-    
     clearHistoryBtn.style.display = 'inline-flex';
-    history.forEach(item => {
+    displayHistory.forEach(item => {
         const historyItem = document.createElement('div');
         historyItem.className = 'history-item';
-        
+        // Favorite button
+        const favBtn = document.createElement('button');
+        favBtn.className = 'favorite-btn' + (favorites.includes(item.id) ? ' favorited' : '');
+        favBtn.innerHTML = '<i class="fas fa-star"></i>';
+        favBtn.title = isPremium ? (favorites.includes(item.id) ? 'Unfavorite' : 'Favorite') : 'Premium Only';
+        favBtn.disabled = !isPremium;
+        favBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (!isPremium) {
+                showToastNotification('This is a premium feature. Please activate.');
+                return;
+            }
+            if (favorites.includes(item.id)) {
+                favorites = favorites.filter(favId => favId !== item.id);
+            } else {
+                favorites.push(item.id);
+            }
+            localStorage.setItem('favorites', JSON.stringify(favorites));
+            loadHistory();
+        });
         // Get full language names from codes
         const sourceLangName = LANGUAGES[item.sourceLang] || 'Unknown';
         const targetLangName = LANGUAGES[item.targetLang] || 'Unknown';
-        
-        historyItem.innerHTML = `            <div class="lang-pair">${sourceLangName} → ${targetLangName}</div>
+        historyItem.appendChild(favBtn);
+        historyItem.innerHTML += `            <div class="lang-pair">${sourceLangName} → ${targetLangName}</div>
             <div class="source-text">${item.sourceText}</div>
             <div class="target-text">${item.targetText}</div>
             <div class="timestamp">${item.timestamp}</div>
         `;
-        
         historyItem.addEventListener('click', () => {
             sourceText.value = item.sourceText;
             sourceLanguage.value = item.sourceLang;
             targetLanguage.value = item.targetLang;
             translate();
         });
-        
         translationHistory.appendChild(historyItem);
     });
 }
@@ -682,6 +891,7 @@ function showCharLimitWarning() {
 function executeClearHistory() {
     history = [];
     eraseCookie('translationHistory'); // Erase the cookie
+    localStorage.removeItem('favorites');
     loadHistory();
     confirmModal.style.display = 'none';
     showToastNotification('History cleared successfully!');
@@ -689,22 +899,15 @@ function executeClearHistory() {
 
 // Show Toast Notification
 function showToastNotification(message) {
-    const notification = document.createElement('div');
-    notification.className = 'toast-notification';
-    notification.textContent = message;
-    document.body.appendChild(notification);
-
-    // Show notification
-    setTimeout(() => {
-        notification.classList.add('show');
-    }, 100);
-
-    // Hide and remove notification after 3 seconds
-    setTimeout(() => {
-        notification.classList.remove('show');
-        setTimeout(() => {
-            document.body.removeChild(notification);
-        }, 500); // Wait for fade out animation
+    const toast = document.getElementById('toastNotification');
+    if (!toast) return;
+    toast.textContent = message;
+    toast.classList.add('show');
+    // Remove any previous timeout
+    if (toast.toastTimeout) clearTimeout(toast.toastTimeout);
+    // Hide after 3s
+    toast.toastTimeout = setTimeout(() => {
+        toast.classList.remove('show');
     }, 3000);
 }
 
@@ -749,6 +952,25 @@ function loadSettings() {
             opt.selected = (opt.value === selectedVoiceId);
         });
     }
+
+    // Load Voice Pitch
+    const savedPitch = parseFloat(localStorage.getItem('voicePitch'));
+    voicePitch = isNaN(savedPitch) ? 1 : savedPitch;
+    const voicePitchSlider = document.getElementById('voicePitchSlider');
+    const voicePitchValue = document.getElementById('voicePitchValue');
+    if (voicePitchSlider && voicePitchValue) {
+        voicePitchSlider.value = voicePitch;
+        voicePitchValue.textContent = voicePitch.toFixed(2);
+    }
+    // Load Voice Volume
+    const savedVolume = parseFloat(localStorage.getItem('voiceVolume'));
+    voiceVolume = isNaN(savedVolume) ? 1 : savedVolume;
+    const voiceVolumeSlider = document.getElementById('voiceVolumeSlider');
+    const voiceVolumeValue = document.getElementById('voiceVolumeValue');
+    if (voiceVolumeSlider && voiceVolumeValue) {
+        voiceVolumeSlider.value = voiceVolume;
+        voiceVolumeValue.textContent = voiceVolume.toFixed(2);
+    }
 }
 
 function toggleTheme() {
@@ -760,13 +982,15 @@ function toggleTheme() {
     }
 }
 
-function testVoiceSpeed(speed, lang) {
-    const testPhrase = lang === 'si' ? 'කටහඬ වේගය පරීක්ෂා කිරීම' : 'Testing voice speed';
+function testVoiceSpeed(speed, lang, pitch = voicePitch, volume = voiceVolume) {
+    const testPhrase = lang === 'si' ? 'කටහඬ වේගය පරීක්ෂා කිරීම' : 'Testing voice settings';
     if ('speechSynthesis' in window) {
         speechSynthesis.cancel();
         const utterance = new SpeechSynthesisUtterance(testPhrase);
         utterance.lang = lang;
         utterance.rate = speed;
+        utterance.pitch = pitch;
+        utterance.volume = volume;
         if (isPremium && selectedVoiceId) {
             const v = pickVoiceById(selectedVoiceId);
             if (v) utterance.voice = v;
@@ -813,7 +1037,24 @@ function updateUIForPremiumStatus() {
     updateCharCounter();
     const aiVoiceSourceBtn = document.getElementById('aiVoiceSource');
     const aiVoiceTargetBtn = document.getElementById('aiVoiceTarget');
+    const adBanner = document.getElementById('adBanner');
+    const exportHistoryBtn = document.getElementById('exportHistoryBtn');
+    const batchTranslateBtn = document.getElementById('batchTranslateBtn');
+    const showFavoritesBtn = document.getElementById('showFavoritesBtn');
+    const downloadPdfBtn = document.getElementById('downloadPdfBtn');
+    const downloadTxtBtn = document.getElementById('downloadTxtBtn');
+    const themeColorPicker = document.getElementById('themeColorPicker');
+    const headerTitle = document.querySelector('header h1');
     if (isPremium) {
+        // Add premium badge if it doesn't exist
+        if (headerTitle && !document.getElementById('premiumBadge')) {
+            const badge = document.createElement('span');
+            badge.id = 'premiumBadge';
+            badge.className = 'premium-badge';
+            badge.textContent = 'Premium';
+            headerTitle.appendChild(document.createTextNode(' ')); // space before badge
+            headerTitle.appendChild(badge);
+        }
         dictateBtn.classList.remove('locked');
         dictateBtn.title = "Speak to Type (Dictation)";
         unlockPremiumBtn.style.display = 'none';
@@ -832,7 +1073,40 @@ function updateUIForPremiumStatus() {
         if (aiVoiceTargetBtn) {
             aiVoiceTargetBtn.title = "AI Voice (ElevenLabs)";
         }
+        if (adBanner) adBanner.style.display = 'none';
+        // Custom Voice Settings (Pitch & Volume)
+        const voicePitchSlider = document.getElementById('voicePitchSlider');
+        const voiceVolumeSlider = document.getElementById('voiceVolumeSlider');
+        const testVoiceSettingsBtn = document.getElementById('testVoiceSettingsBtn');
+        if (voicePitchSlider) voicePitchSlider.disabled = false;
+        if (voiceVolumeSlider) voiceVolumeSlider.disabled = false;
+        if (testVoiceSettingsBtn) {
+            testVoiceSettingsBtn.disabled = false;
+            testVoiceSettingsBtn.title = 'Test Voice Settings';
+        }
+        if (exportHistoryBtn) {
+            exportHistoryBtn.disabled = false;
+            exportHistoryBtn.title = 'Export History';
+        }
+        if (batchTranslateBtn) {
+            batchTranslateBtn.disabled = false;
+            batchTranslateBtn.title = 'Batch Translate';
+        }
+        if (showFavoritesBtn) {
+            showFavoritesBtn.disabled = false;
+            showFavoritesBtn.title = 'Show Favorites';
+        }
+        if (downloadPdfBtn) {
+            downloadPdfBtn.disabled = false;
+            downloadPdfBtn.title = 'Download as PDF';
+        }
+        if (downloadTxtBtn) {
+            downloadTxtBtn.disabled = false;
+            downloadTxtBtn.title = 'Download as TXT';
+        }
     } else {
+        const badge = document.getElementById('premiumBadge');
+        if (badge) badge.remove();
         dictateBtn.classList.add('locked');
         dictateBtn.title = "Unlock Premium to use Dictation";
         unlockPremiumBtn.style.display = 'block';
@@ -852,12 +1126,43 @@ function updateUIForPremiumStatus() {
         if (aiVoiceTargetBtn) {
             aiVoiceTargetBtn.title = "AI Voice (Premium Only)";
         }
+        if (adBanner) adBanner.style.display = 'block';
+        // Custom Voice Settings (Pitch & Volume)
+        const voicePitchSlider = document.getElementById('voicePitchSlider');
+        const voiceVolumeSlider = document.getElementById('voiceVolumeSlider');
+        const testVoiceSettingsBtn = document.getElementById('testVoiceSettingsBtn');
+        if (voicePitchSlider) voicePitchSlider.disabled = true;
+        if (voiceVolumeSlider) voiceVolumeSlider.disabled = true;
+        if (testVoiceSettingsBtn) {
+            testVoiceSettingsBtn.disabled = true;
+            testVoiceSettingsBtn.title = 'Premium Only';
+        }
+        if (exportHistoryBtn) {
+            exportHistoryBtn.disabled = true;
+            exportHistoryBtn.title = 'Premium Only';
+        }
+        if (batchTranslateBtn) {
+            batchTranslateBtn.disabled = true;
+            batchTranslateBtn.title = 'Premium Only';
+        }
+        if (showFavoritesBtn) {
+            showFavoritesBtn.disabled = true;
+            showFavoritesBtn.title = 'Premium Only';
+        }
+        if (downloadPdfBtn) {
+            downloadPdfBtn.disabled = true;
+            downloadPdfBtn.title = 'Premium Only';
+        }
+        if (downloadTxtBtn) {
+            downloadTxtBtn.disabled = true;
+            downloadTxtBtn.title = 'Premium Only';
+        }
     }
 }
 
 function activatePremium() {
     const enteredKey = activationKeyInput.value;
-    if (enteredKey === ACTIVATION_KEY) {
+    if (ACTIVATION_KEYS.includes(enteredKey)) {
         isPremium = true;
         localStorage.setItem('isPremium', 'true');
         updateUIForPremiumStatus();
@@ -939,4 +1244,20 @@ if (voiceSelect) {
 }
 
 // Initialize the app when DOM is loaded
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', () => {
+    init();
+    bindVoiceSpeedTestBtns();
+});
+
+function bindVoiceSpeedTestBtns() {
+    const voiceSpeedTestBtns = document.querySelectorAll('.test-speed-btn');
+    voiceSpeedTestBtns.forEach(btn => {
+        btn.removeEventListener('click', btn._voiceTestHandler || (()=>{})); // Remove previous if any
+        const handler = (e) => {
+            const speed = parseFloat(e.currentTarget.dataset.speed);
+            testVoiceSpeed(speed, sourceLanguage.value);
+        };
+        btn.addEventListener('click', handler);
+        btn._voiceTestHandler = handler;
+    });
+}

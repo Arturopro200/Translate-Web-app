@@ -487,11 +487,14 @@ footer p {
         padding: 5px;
     }
     .container {
-        padding: 10px 3px;
-        border-radius: 12px;
+        padding: 8px 2px;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        margin: 0;
     }
     header h1 {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
+        margin-bottom: 4px;
     }
     .settings-btn {
         font-size: 1.1rem;
@@ -500,7 +503,9 @@ footer p {
         padding: 6px;
     }
     .language-selector {
+        flex-direction: column;
         gap: 6px;
+        margin-bottom: 10px;
     }
     .language-box label {
         font-size: 0.95rem;
@@ -516,12 +521,17 @@ footer p {
         margin: 0.3rem 0;
     }
     .translation-area {
+        grid-template-columns: 1fr;
         gap: 0.7rem;
+    }
+    .text-area-container {
+        padding: 6px 4px 18px 4px;
+        border-radius: 8px;
     }
     .text-area-container textarea {
         font-size: 0.95rem;
         min-height: 90px;
-        padding: 10px 45px 25px 10px;
+        padding: 10px 10px 25px 10px;
         border-radius: 8px;
     }
     .char-counter {
@@ -534,39 +544,42 @@ footer p {
         top: 4px;
         gap: 6px;
     }
-    .clear-btn, .copy-btn, .speak-btn, .dictate-btn {
+    .clear-btn, .copy-btn, .speak-btn, .dictate-btn, .ai-voice-btn, .upload-file-btn, .download-pdf-btn, .download-txt-btn, .batch-translate-btn {
         width: 28px;
         height: 28px;
         font-size: 1rem;
     }
     .action-buttons {
-        margin-top: 18px;
+        margin-top: 12px;
     }
     .translate-btn {
         font-size: 1rem;
-        padding: 12px;
+        padding: 10px;
         border-radius: 30px;
+        width: 100%;
     }
     .history-section {
-        margin-top: 18px;
+        margin-top: 10px;
+        padding: 6px 2px 4px 2px;
+        border-radius: 8px;
     }
     .history-header h3 {
-        font-size: 1.1rem;
+        font-size: 1.05rem;
     }
-    .clear-history-btn {
+    .clear-history-btn, .export-history-btn, .show-favorites-btn {
         font-size: 0.85rem;
         padding: 6px 10px;
         border-radius: 6px;
     }
     .history-list {
-        max-height: 180px;
+        max-height: 120px;
         padding-right: 3px;
     }
     .history-item {
         font-size: 0.95rem;
-        padding: 10px;
+        padding: 8px;
         border-radius: 7px;
-        margin-bottom: 8px;
+        margin-bottom: 6px;
     }
     .modal-content {
         width: 98vw;
@@ -574,11 +587,8 @@ footer p {
         padding: 10px 5px;
         border-radius: 12px;
     }
-    .modal-content h2 {
+    .modal-content h2, .modal-content h3 {
         font-size: 1.1rem;
-    }
-    .modal-content h3 {
-        font-size: 1rem;
     }
     .modal-content p, .modal-content ul li {
         font-size: 0.95rem;
@@ -589,12 +599,14 @@ footer p {
         border-radius: 7px;
     }
     .settings-panel {
-        width: 97vw;
+        width: 99vw;
         min-width: unset;
         right: 0;
         left: 0;
         border-radius: 12px;
         padding: 10px 5px;
+        max-height: 95vh;
+        overflow-y: auto;
     }
     .settings-panel-header h3 {
         font-size: 1rem;
@@ -609,11 +621,6 @@ footer p {
         border-radius: 7px;
     }
     .voice-speed-options label {
-        font-size: 0.95rem;
-    }
-    .test-speed-btn {
-        width: 24px;
-        height: 24px;
         font-size: 0.95rem;
     }
     .custom-speed-control {
@@ -639,6 +646,14 @@ footer p {
     footer p {
         font-size: 0.95rem;
     }
+    .theme-toggle-btn {
+        width: 36px;
+        height: 20px;
+        border-radius: 14px;
+    }
+    .sun-icon-wrapper, .moon-icon-wrapper {
+        font-size: 0.9rem;
+    }
 }
 
 @media (max-width: 400px) {
@@ -647,8 +662,8 @@ footer p {
         overflow-x: hidden;
     }
     .container {
-        padding: 4px 1px;
-        border-radius: 8px;
+        padding: 2px 1px;
+        border-radius: 6px;
     }
     header h1 {
         font-size: 0.95rem;
@@ -689,13 +704,13 @@ footer p {
         top: 2px;
         gap: 4px;
     }
-    .clear-btn, .copy-btn, .speak-btn, .dictate-btn {
+    .clear-btn, .copy-btn, .speak-btn, .dictate-btn, .ai-voice-btn, .upload-file-btn, .download-pdf-btn, .download-txt-btn, .batch-translate-btn {
         width: 22px;
         height: 22px;
         font-size: 0.95rem;
     }
     .action-buttons {
-        margin-top: 10px;
+        margin-top: 8px;
     }
     .translate-btn {
         font-size: 0.95rem;
@@ -703,25 +718,25 @@ footer p {
         border-radius: 20px;
     }
     .history-section {
-        margin-top: 10px;
+        margin-top: 6px;
     }
     .history-header h3 {
         font-size: 0.95rem;
     }
-    .clear-history-btn {
+    .clear-history-btn, .export-history-btn, .show-favorites-btn {
         font-size: 0.8rem;
         padding: 4px 7px;
         border-radius: 5px;
     }
     .history-list {
-        max-height: 100px;
+        max-height: 80px;
         padding-right: 1px;
     }
     .history-item {
         font-size: 0.9rem;
-        padding: 6px;
+        padding: 4px;
         border-radius: 5px;
-        margin-bottom: 4px;
+        margin-bottom: 3px;
     }
     .modal-content {
         width: 100vw;
@@ -756,11 +771,6 @@ footer p {
     .voice-speed-options label {
         font-size: 0.9rem;
     }
-    .test-speed-btn {
-        width: 18px;
-        height: 18px;
-        font-size: 0.9rem;
-    }
     .custom-speed-control {
         gap: 4px;
     }
@@ -783,6 +793,14 @@ footer p {
     }
     footer p {
         font-size: 0.9rem;
+    }
+    .theme-toggle-btn {
+        width: 28px;
+        height: 16px;
+        border-radius: 10px;
+    }
+    .sun-icon-wrapper, .moon-icon-wrapper {
+        font-size: 0.8rem;
     }
 }
 
@@ -919,25 +937,41 @@ footer p {
 /* Toast Notification */
 .toast-notification {
     position: fixed;
-    bottom: 30px;
     left: 50%;
-    transform: translateX(-50%);
-    background-color: #323232;
-    color: white;
-    padding: 14px 25px;
-    border-radius: 50px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-    z-index: 2000;
-    font-size: 0.95rem;
+    bottom: 40px;
+    transform: translateX(-50%) scale(0.95);
+    min-width: 240px;
+    max-width: 90vw;
+    background: var(--container-bg);
+    color: var(--text-color);
+    padding: 16px 32px;
+    border-radius: 16px;
+    font-size: 1.08rem;
+    box-shadow: 0 6px 32px rgba(0,0,0,0.18);
     opacity: 0;
-    transition: all 0.4s ease;
-    display: none;
-}
-
-.toast-notification.show {
+    pointer-events: none;
+    z-index: 3000;
+    transition: opacity 0.3s, transform 0.3s;
     display: block;
-    opacity: 1;
-    transform: translate(-50%, 0);
+    text-align: center;
+    font-weight: 500;
+    border: 1.5px solid var(--border-color);
+}
+.toast-notification.show {
+    opacity: 0.97;
+    pointer-events: auto;
+    transform: translateX(-50%) scale(1);
+    animation: toastPop 0.4s;
+}
+@keyframes toastPop {
+    0% { transform: translateX(-50%) scale(0.8); opacity: 0; }
+    60% { transform: translateX(-50%) scale(1.05); opacity: 1; }
+    100% { transform: translateX(-50%) scale(1); opacity: 0.97; }
+}
+body.dark-mode .toast-notification {
+    background: #222b3a;
+    color: #f0f2f5;
+    border-color: #3a4a5b;
 }
 /* Remaining styles for language selector, text areas, buttons etc. */
 .language-selector {
@@ -1424,6 +1458,256 @@ body.dark-mode .history-item .timestamp {
 }
 @media (max-width: 480px) {
     .ai-voice-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 1rem;
+    }
+}
+
+.upload-file-btn {
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #27ae60;
+    transition: background 0.2s, color 0.2s;
+    font-size: 1.1rem;
+    margin-top: 2px;
+}
+.upload-file-btn:hover {
+    background: color-mix(in srgb, #27ae60 15%, transparent);
+    color: #145a32;
+}
+.upload-file-btn:disabled {
+    color: #aaa;
+    background: #f5f5f5;
+    cursor: not-allowed;
+}
+@media (max-width: 480px) {
+    .upload-file-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 1rem;
+    }
+}
+
+.ad-banner {
+    width: 100%;
+    background: linear-gradient(90deg, #ffe259 0%, #ffa751 100%);
+    color: #333;
+    text-align: center;
+    padding: 14px 0;
+    font-size: 1.05rem;
+    font-weight: 600;
+    border-radius: 10px;
+    margin-bottom: 18px;
+    box-shadow: 0 2px 10px rgba(255, 174, 81, 0.12);
+    letter-spacing: 0.5px;
+}
+
+.ad-label {
+    background: #e74c3c;
+    color: #fff;
+    font-size: 0.92em;
+    font-weight: 700;
+    border-radius: 4px;
+    padding: 2px 8px;
+    margin-right: 10px;
+    letter-spacing: 1px;
+    vertical-align: middle;
+}
+
+.custom-voice-settings {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+.custom-voice-settings label {
+    font-size: 1rem;
+    color: var(--text-color);
+    margin-bottom: 2px;
+}
+.custom-voice-settings input[type="range"] {
+    width: 100%;
+    margin-bottom: 6px;
+}
+.test-voice-btn {
+    display: block;
+    margin-left: auto;
+    margin-top: 12px;
+    padding: 8px 18px;
+    font-size: 1rem;
+    border-radius: 8px;
+    background: var(--primary-color);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.2s, color 0.2s;
+}
+.test-voice-btn:hover:not(:disabled) {
+    background: var(--hover-color);
+    color: #fff;
+}
+.test-voice-btn:disabled {
+    color: #aaa;
+    background: #f5f5f5;
+    cursor: not-allowed;
+}
+
+.export-history-btn {
+    background-color: #e3f0ff;
+    color: #2980ef;
+    border: 1px solid #2980ef;
+    padding: 8px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+}
+.export-history-btn:hover:not(:disabled) {
+    background-color: #2980ef;
+    color: #fff;
+}
+.export-history-btn:disabled {
+    color: #aaa;
+    background: #f5f5f5;
+    border-color: #ccc;
+    cursor: not-allowed;
+}
+
+.batch-translate-btn {
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #8e44ad;
+    transition: background 0.2s, color 0.2s;
+    font-size: 1.1rem;
+    margin-top: 2px;
+}
+.batch-translate-btn:hover {
+    background: color-mix(in srgb, #8e44ad 15%, transparent);
+    color: #5e3370;
+}
+.batch-translate-btn:disabled {
+    color: #aaa;
+    background: #f5f5f5;
+    cursor: not-allowed;
+}
+@media (max-width: 480px) {
+    .batch-translate-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 1rem;
+    }
+}
+
+.favorite-btn {
+    background: transparent;
+    border: none;
+    color: #f1c40f;
+    font-size: 1.2rem;
+    cursor: pointer;
+    margin-right: 8px;
+    transition: color 0.2s;
+    vertical-align: middle;
+}
+.favorite-btn.favorited {
+    color: #e67e22;
+}
+.favorite-btn:disabled {
+    color: #ccc;
+    cursor: not-allowed;
+}
+.show-favorites-btn {
+    background-color: #fffbe6;
+    color: #e67e22;
+    border: 1px solid #e67e22;
+    padding: 8px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+}
+.show-favorites-btn.active, .show-favorites-btn:hover:not(:disabled) {
+    background-color: #e67e22;
+    color: #fff;
+}
+.show-favorites-btn:disabled {
+    color: #aaa;
+    background: #f5f5f5;
+    border-color: #ccc;
+    cursor: not-allowed;
+}
+
+.download-pdf-btn {
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #e74c3c;
+    transition: background 0.2s, color 0.2s;
+    font-size: 1.1rem;
+    margin-top: 2px;
+}
+.download-pdf-btn:hover {
+    background: color-mix(in srgb, #e74c3c 15%, transparent);
+    color: #b71c1c;
+}
+.download-pdf-btn:disabled {
+    color: #aaa;
+    background: #f5f5f5;
+    cursor: not-allowed;
+}
+.download-txt-btn {
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #2980ef;
+    transition: background 0.2s, color 0.2s;
+    font-size: 1.1rem;
+    margin-top: 2px;
+}
+.download-txt-btn:hover {
+    background: color-mix(in srgb, #2980ef 15%, transparent);
+    color: #145a32;
+}
+.download-txt-btn:disabled {
+    color: #aaa;
+    background: #f5f5f5;
+    cursor: not-allowed;
+}
+@media (max-width: 480px) {
+    .download-pdf-btn, .download-txt-btn {
         width: 28px;
         height: 28px;
         font-size: 1rem;
