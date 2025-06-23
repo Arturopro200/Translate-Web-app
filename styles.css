@@ -1713,3 +1713,24 @@ body.dark-mode .history-item .timestamp {
         font-size: 1rem;
     }
 }
+
+.install-app-btn {
+    background: linear-gradient(135deg, #7B4BFF, #5d3dff);
+    color: #fff;
+    border: none;
+    border-radius: 100px;
+    padding: 10px 28px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin: 10px 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 8px rgba(123,75,255,0.08);
+    transition: background 0.2s, transform 0.2s;
+}
+.install-app-btn:hover {
+    background: #5d3dff;
+    transform: scale(1.04);
+}
