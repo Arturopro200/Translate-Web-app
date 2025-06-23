@@ -487,11 +487,14 @@ footer p {
         padding: 5px;
     }
     .container {
-        padding: 10px 3px;
-        border-radius: 12px;
+        padding: 8px 2px;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        margin: 0;
     }
     header h1 {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
+        margin-bottom: 4px;
     }
     .settings-btn {
         font-size: 1.1rem;
@@ -500,7 +503,9 @@ footer p {
         padding: 6px;
     }
     .language-selector {
+        flex-direction: column;
         gap: 6px;
+        margin-bottom: 10px;
     }
     .language-box label {
         font-size: 0.95rem;
@@ -516,12 +521,17 @@ footer p {
         margin: 0.3rem 0;
     }
     .translation-area {
+        grid-template-columns: 1fr;
         gap: 0.7rem;
+    }
+    .text-area-container {
+        padding: 6px 4px 18px 4px;
+        border-radius: 8px;
     }
     .text-area-container textarea {
         font-size: 0.95rem;
         min-height: 90px;
-        padding: 10px 45px 25px 10px;
+        padding: 10px 10px 25px 10px;
         border-radius: 8px;
     }
     .char-counter {
@@ -534,39 +544,42 @@ footer p {
         top: 4px;
         gap: 6px;
     }
-    .clear-btn, .copy-btn, .speak-btn, .dictate-btn {
+    .clear-btn, .copy-btn, .speak-btn, .dictate-btn, .ai-voice-btn, .upload-file-btn, .download-pdf-btn, .download-txt-btn, .batch-translate-btn {
         width: 28px;
         height: 28px;
         font-size: 1rem;
     }
     .action-buttons {
-        margin-top: 18px;
+        margin-top: 12px;
     }
     .translate-btn {
         font-size: 1rem;
-        padding: 12px;
+        padding: 10px;
         border-radius: 30px;
+        width: 100%;
     }
     .history-section {
-        margin-top: 18px;
+        margin-top: 10px;
+        padding: 6px 2px 4px 2px;
+        border-radius: 8px;
     }
     .history-header h3 {
-        font-size: 1.1rem;
+        font-size: 1.05rem;
     }
-    .clear-history-btn {
+    .clear-history-btn, .export-history-btn, .show-favorites-btn {
         font-size: 0.85rem;
         padding: 6px 10px;
         border-radius: 6px;
     }
     .history-list {
-        max-height: 180px;
+        max-height: 120px;
         padding-right: 3px;
     }
     .history-item {
         font-size: 0.95rem;
-        padding: 10px;
+        padding: 8px;
         border-radius: 7px;
-        margin-bottom: 8px;
+        margin-bottom: 6px;
     }
     .modal-content {
         width: 98vw;
@@ -574,11 +587,8 @@ footer p {
         padding: 10px 5px;
         border-radius: 12px;
     }
-    .modal-content h2 {
+    .modal-content h2, .modal-content h3 {
         font-size: 1.1rem;
-    }
-    .modal-content h3 {
-        font-size: 1rem;
     }
     .modal-content p, .modal-content ul li {
         font-size: 0.95rem;
@@ -589,12 +599,14 @@ footer p {
         border-radius: 7px;
     }
     .settings-panel {
-        width: 97vw;
+        width: 99vw;
         min-width: unset;
         right: 0;
         left: 0;
         border-radius: 12px;
         padding: 10px 5px;
+        max-height: 95vh;
+        overflow-y: auto;
     }
     .settings-panel-header h3 {
         font-size: 1rem;
@@ -609,11 +621,6 @@ footer p {
         border-radius: 7px;
     }
     .voice-speed-options label {
-        font-size: 0.95rem;
-    }
-    .test-speed-btn {
-        width: 24px;
-        height: 24px;
         font-size: 0.95rem;
     }
     .custom-speed-control {
@@ -639,6 +646,14 @@ footer p {
     footer p {
         font-size: 0.95rem;
     }
+    .theme-toggle-btn {
+        width: 36px;
+        height: 20px;
+        border-radius: 14px;
+    }
+    .sun-icon-wrapper, .moon-icon-wrapper {
+        font-size: 0.9rem;
+    }
 }
 
 @media (max-width: 400px) {
@@ -647,8 +662,8 @@ footer p {
         overflow-x: hidden;
     }
     .container {
-        padding: 4px 1px;
-        border-radius: 8px;
+        padding: 2px 1px;
+        border-radius: 6px;
     }
     header h1 {
         font-size: 0.95rem;
@@ -689,13 +704,13 @@ footer p {
         top: 2px;
         gap: 4px;
     }
-    .clear-btn, .copy-btn, .speak-btn, .dictate-btn {
+    .clear-btn, .copy-btn, .speak-btn, .dictate-btn, .ai-voice-btn, .upload-file-btn, .download-pdf-btn, .download-txt-btn, .batch-translate-btn {
         width: 22px;
         height: 22px;
         font-size: 0.95rem;
     }
     .action-buttons {
-        margin-top: 10px;
+        margin-top: 8px;
     }
     .translate-btn {
         font-size: 0.95rem;
@@ -703,25 +718,25 @@ footer p {
         border-radius: 20px;
     }
     .history-section {
-        margin-top: 10px;
+        margin-top: 6px;
     }
     .history-header h3 {
         font-size: 0.95rem;
     }
-    .clear-history-btn {
+    .clear-history-btn, .export-history-btn, .show-favorites-btn {
         font-size: 0.8rem;
         padding: 4px 7px;
         border-radius: 5px;
     }
     .history-list {
-        max-height: 100px;
+        max-height: 80px;
         padding-right: 1px;
     }
     .history-item {
         font-size: 0.9rem;
-        padding: 6px;
+        padding: 4px;
         border-radius: 5px;
-        margin-bottom: 4px;
+        margin-bottom: 3px;
     }
     .modal-content {
         width: 100vw;
@@ -756,11 +771,6 @@ footer p {
     .voice-speed-options label {
         font-size: 0.9rem;
     }
-    .test-speed-btn {
-        width: 18px;
-        height: 18px;
-        font-size: 0.9rem;
-    }
     .custom-speed-control {
         gap: 4px;
     }
@@ -783,6 +793,14 @@ footer p {
     }
     footer p {
         font-size: 0.9rem;
+    }
+    .theme-toggle-btn {
+        width: 28px;
+        height: 16px;
+        border-radius: 10px;
+    }
+    .sun-icon-wrapper, .moon-icon-wrapper {
+        font-size: 0.8rem;
     }
 }
 
