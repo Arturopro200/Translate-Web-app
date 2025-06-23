@@ -833,7 +833,18 @@ function populateVoiceSelect() {
     availableVoices.forEach((v, i) => {
         const option = document.createElement('option');
         option.value = v.voiceURI;
-        option.textContent = `${v.name} (${v.lang}${v.gender ? ', ' + v.gender : ''})`;
+        let label = v.name;
+        // Sinhala highlight
+        if (v.lang === 'si-LK' || v.lang === 'si') {
+            label += ' (සිංහල, Sri Lanka';
+            if (v.gender) label += ', ' + v.gender;
+            label += ')';
+        } else {
+            label += ` (${v.lang}`;
+            if (v.gender) label += ', ' + v.gender;
+            label += ')';
+        }
+        option.textContent = label;
         if (selectedVoiceId === v.voiceURI) option.selected = true;
         voiceSelect.appendChild(option);
     });
