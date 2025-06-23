@@ -20,6 +20,7 @@ const clearSourceBtn = document.getElementById('clearSource');
 const copyTranslationBtn = document.getElementById('copyTranslation');
 const speakSourceBtn = document.getElementById('speakSource');
 const speakTargetBtn = document.getElementById('speakTarget');
+const dictateBtn = document.getElementById('dictateBtn');
 const translationHistory = document.getElementById('translationHistory');
 const charCounter = document.getElementById('charCounter');
 const clearHistoryBtn = document.getElementById('clearHistoryBtn');
@@ -188,6 +189,67 @@ function setupEventListeners() {
             testVoiceSpeed(speed, sourceLanguage.value);
         });
     });
+
+    // --- SPEECH RECOGNITION (DICTATION) ---
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    let recognition;
+
+    if (SpeechRecognition) {
+        recognition = new SpeechRecognition();
+        recognition.continuous = true; // Keep listening
+        recognition.interimResults = true; // Get results as they come in
+
+        dictateBtn.addEventListener('click', toggleDictation);
+
+        recognition.onresult = (event) => {
+            let interim_transcript = '';
+            let final_transcript = '';
+
+            for (let i = event.resultIndex; i < event.results.length; ++i) {
+                if (event.results[i].isFinal) {
+                    final_transcript += event.results[i][0].transcript;
+                } else {
+                    interim_transcript += event.results[i][0].transcript;
+                }
+            }
+            
+            // Update the text area with the final transcript
+            if(final_transcript) {
+                sourceText.value = final_transcript;
+                translate(); // Auto-translate after dictation
+            }
+        };
+
+        recognition.onstart = () => {
+            dictateBtn.classList.add('listening');
+            dictateBtn.title = "Stop Dictation";
+        };
+
+        recognition.onend = () => {
+            dictateBtn.classList.remove('listening');
+            dictateBtn.title = "Speak to Type (Dictation)";
+        };
+        
+        recognition.onerror = (event) => {
+            console.error("Speech recognition error:", event.error);
+            dictateBtn.classList.remove('listening');
+            dictateBtn.title = "Dictation not available";
+        };
+
+    } else {
+        dictateBtn.style.display = 'none'; // Hide button if API not supported
+        console.warn("Speech Recognition API not supported in this browser.");
+    }
+
+    function toggleDictation() {
+        if (dictateBtn.classList.contains('listening')) {
+            recognition.stop();
+        } else {
+            // Set the language for recognition based on the selected source language
+            recognition.lang = sourceLanguage.value;
+            recognition.start();
+        }
+    }
 }
 
 // Debounce function
