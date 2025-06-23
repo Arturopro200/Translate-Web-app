@@ -9,6 +9,7 @@ const urlsToCache = [
 ];
 
 self.addEventListener('install', event => {
+  self.skipWaiting(); // Activate new SW immediately
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => cache.addAll(urlsToCache))
@@ -31,4 +32,10 @@ self.addEventListener('activate', event => {
       );
     })
   );
+  // Notify clients about update
+  self.clients.matchAll({ type: 'window' }).then(clients => {
+    clients.forEach(client => {
+      client.postMessage({ type: 'SW_UPDATED' });
+    });
+  });
 }); 
