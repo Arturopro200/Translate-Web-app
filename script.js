@@ -62,7 +62,7 @@ let voicePitch = 1;
 let voiceVolume = 1;
 let history = []; 
 let isPremium = false;
-const ACTIVATION_KEY = '123456789';
+const ACTIVATION_KEYS = ['123456789', 'janith123'];
 let favorites = [];
 
 // --- LANGUAGES OBJECT (without "Detect Language") ---
@@ -1175,7 +1175,7 @@ function updateUIForPremiumStatus() {
 
 function activatePremium() {
     const enteredKey = activationKeyInput.value;
-    if (enteredKey === ACTIVATION_KEY) {
+    if (ACTIVATION_KEYS.includes(enteredKey)) {
         isPremium = true;
         localStorage.setItem('isPremium', 'true');
         updateUIForPremiumStatus();
