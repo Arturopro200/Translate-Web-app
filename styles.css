@@ -1357,3 +1357,43 @@ body.dark-mode .history-item .timestamp {
         gap: 10px;
     }
 }
+
+.voice-select-section {
+    margin-bottom: 18px;
+}
+#voiceSelect {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    font-size: 1rem;
+    color: var(--text-color);
+    background: var(--input-bg);
+    margin-top: 8px;
+    margin-bottom: 4px;
+    transition: border-color 0.2s;
+}
+#voiceSelect:disabled {
+    background: #f5f5f5;
+    color: #aaa;
+    cursor: not-allowed;
+}
+.voice-select-section.disabled {
+    opacity: 0.6;
+    pointer-events: none;
+    cursor: not-allowed;
+}
+.voice-select-disabled-text {
+    font-size: 0.92em;
+    color: #e74c3c;
+    font-style: italic;
+    margin-top: 4px;
+    display: block;
+}
+@media (max-width: 480px) {
+    #voiceSelect {
+        font-size: 0.95rem;
+        padding: 8px;
+        border-radius: 6px;
+    }
+}

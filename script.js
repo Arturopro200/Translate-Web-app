@@ -86,6 +86,11 @@ const voiceGenderRadios = document.getElementsByName('voiceGender');
 let voiceGender = localStorage.getItem('voiceGender') || 'female';
 let availableVoices = [];
 
+const voiceSelectSection = document.querySelector('.voice-select-section');
+const voiceSelect = document.getElementById('voiceSelect');
+const voiceSelectDisabledText = document.querySelector('.voice-select-disabled-text');
+let selectedVoiceId = localStorage.getItem('selectedVoiceId') || '';
+
 // Load voices (browser TTS)
 function loadVoices() {
     availableVoices = speechSynthesis.getVoices();
@@ -434,13 +439,12 @@ function copyTranslation() {
 // Text-to-speech
 function speakText(text, lang) {
     if ('speechSynthesis' in window && text) {
-        speechSynthesis.cancel(); // Cancel any previous speech
+        speechSynthesis.cancel();
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = lang;
         utterance.rate = voiceSpeed;
-        // Pick voice by gender (premium only)
-        if (isPremium) {
-            const v = pickVoice(lang, voiceGender);
+        if (isPremium && selectedVoiceId) {
+            const v = pickVoiceById(selectedVoiceId);
             if (v) utterance.voice = v;
         }
         speechSynthesis.speak(utterance);
@@ -664,6 +668,14 @@ function loadSettings() {
     // Load Voice Gender
     voiceGender = localStorage.getItem('voiceGender') || 'female';
     voiceGenderRadios.forEach(r => r.checked = (r.value === voiceGender));
+
+    // Load selected voice
+    selectedVoiceId = localStorage.getItem('selectedVoiceId') || '';
+    if (voiceSelect) {
+        Array.from(voiceSelect.options).forEach(opt => {
+            opt.selected = (opt.value === selectedVoiceId);
+        });
+    }
 }
 
 function toggleTheme() {
@@ -682,8 +694,8 @@ function testVoiceSpeed(speed, lang) {
         const utterance = new SpeechSynthesisUtterance(testPhrase);
         utterance.lang = lang;
         utterance.rate = speed;
-        if (isPremium) {
-            const v = pickVoice(lang, voiceGender);
+        if (isPremium && selectedVoiceId) {
+            const v = pickVoiceById(selectedVoiceId);
             if (v) utterance.voice = v;
         }
         speechSynthesis.speak(utterance);
@@ -725,8 +737,7 @@ function checkPremiumStatus() {
 }
 
 function updateUIForPremiumStatus() {
-    updateCharCounter(); // Update counter based on premium status
-
+    updateCharCounter();
     if (isPremium) {
         // Add premium badge if it doesn't exist
         if (!document.getElementById('premiumBadge')) {
@@ -744,6 +755,11 @@ function updateUIForPremiumStatus() {
         if (voiceGenderSection) voiceGenderSection.classList.remove('hidden');
         // Enable gender radios
         voiceGenderRadios.forEach(r => r.disabled = false);
+        if (voiceSelectSection) {
+            voiceSelectSection.classList.remove('hidden', 'disabled');
+            if (voiceSelect) voiceSelect.disabled = false;
+            if (voiceSelectDisabledText) voiceSelectDisabledText.style.display = 'none';
+        }
     } else {
         const badge = document.getElementById('premiumBadge');
         if (badge) {
@@ -756,6 +772,12 @@ function updateUIForPremiumStatus() {
         if (voiceGenderSection) voiceGenderSection.classList.add('hidden');
         // Disable gender radios
         voiceGenderRadios.forEach(r => r.disabled = true);
+        if (voiceSelectSection) {
+            voiceSelectSection.classList.remove('hidden');
+            voiceSelectSection.classList.add('disabled');
+            if (voiceSelect) voiceSelect.disabled = true;
+            if (voiceSelectDisabledText) voiceSelectDisabledText.style.display = 'block';
+        }
     }
 }
 
@@ -796,6 +818,39 @@ function pickVoice(lang, gender) {
         voices = availableVoices.filter(v => v.lang.startsWith(lang));
     }
     return voices[0] || availableVoices[0];
+}
+
+// Pick a voice by voiceId
+function pickVoiceById(voiceId) {
+    if (!availableVoices.length) return null;
+    return availableVoices.find(v => v.voiceURI === voiceId) || availableVoices[0];
+}
+
+// Load voices and populate select
+function populateVoiceSelect() {
+    if (!voiceSelect) return;
+    voiceSelect.innerHTML = '';
+    availableVoices.forEach((v, i) => {
+        const option = document.createElement('option');
+        option.value = v.voiceURI;
+        option.textContent = `${v.name} (${v.lang}${v.gender ? ', ' + v.gender : ''})`;
+        if (selectedVoiceId === v.voiceURI) option.selected = true;
+        voiceSelect.appendChild(option);
+    });
+}
+if ('speechSynthesis' in window) {
+    loadVoices();
+    window.speechSynthesis.onvoiceschanged = () => {
+        loadVoices();
+        populateVoiceSelect();
+    };
+    setTimeout(populateVoiceSelect, 500); // fallback for some browsers
+}
+if (voiceSelect) {
+    voiceSelect.addEventListener('change', (e) => {
+        selectedVoiceId = e.target.value;
+        localStorage.setItem('selectedVoiceId', selectedVoiceId);
+    });
 }
 
 // Initialize the app when DOM is loaded
