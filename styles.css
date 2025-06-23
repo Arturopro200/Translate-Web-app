@@ -864,17 +864,18 @@ body.dark-mode .history-item .timestamp {
     background-color: var(--hover-color);
 }
 
-.unlock-premium-btn {
+.unlock-premium-btn, .logout-premium-btn {
     width: 100%;
     padding: 12px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.unlock-premium-btn {
     background-color: color-mix(in srgb, var(--primary-color) 15%, transparent);
     color: var(--primary-color);
     border: 1px solid var(--primary-color);
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: all 0.2s ease;
 }
 
 .unlock-premium-btn:hover {
@@ -882,7 +883,19 @@ body.dark-mode .history-item .timestamp {
     color: white;
 }
 
-.unlock-premium-btn i {
+.logout-premium-btn {
+    background-color: color-mix(in srgb, #e74c3c 15%, transparent);
+    color: #e74c3c;
+    border: 1px solid #e74c3c;
+    margin-top: 10px; /* Add some space between buttons */
+}
+
+.logout-premium-btn:hover {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.unlock-premium-btn i, .logout-premium-btn i {
     margin-right: 8px;
 }
 
@@ -907,4 +920,4 @@ body.dark-mode .history-item .timestamp {
     font-size: 0.9rem;
     margin-top: 15px;
     height: 1.2em; /* Reserve space to prevent layout shift */
-} 
+}

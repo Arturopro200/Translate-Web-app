@@ -54,6 +54,7 @@ const activationKeyInput = document.getElementById('activationKeyInput');
 const submitActivationKey = document.getElementById('submitActivationKey');
 const activationError = document.getElementById('activationError');
 const headerTitle = document.querySelector('header h1');
+const logoutPremiumBtn = document.getElementById('logoutPremiumBtn');
 
 // Global state
 let voiceSpeed = 1;
@@ -217,6 +218,8 @@ function setupEventListeners() {
             activatePremium();
         }
     });
+
+    logoutPremiumBtn.addEventListener('click', logoutPremium);
 
     // --- SPEECH RECOGNITION (DICTATION) ---
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -664,10 +667,16 @@ function updateUIForPremiumStatus() {
         dictateBtn.classList.remove('locked');
         dictateBtn.title = "Speak to Type (Dictation)";
         unlockPremiumBtn.style.display = 'none';
+        logoutPremiumBtn.classList.remove('hidden');
     } else {
+        const badge = document.getElementById('premiumBadge');
+        if (badge) {
+            badge.remove();
+        }
         dictateBtn.classList.add('locked');
         dictateBtn.title = "Unlock Premium to use Dictation";
         unlockPremiumBtn.style.display = 'block';
+        logoutPremiumBtn.classList.add('hidden');
     }
 }
 
@@ -685,6 +694,13 @@ function activatePremium() {
         activationError.textContent = 'Invalid activation key. Please try again.';
         activationKeyInput.value = '';
     }
+}
+
+function logoutPremium() {
+    isPremium = false;
+    localStorage.removeItem('isPremium');
+    updateUIForPremiumStatus();
+    showToastNotification('You have logged out from premium.');
 }
 
 // Initialize the app when DOM is loaded
