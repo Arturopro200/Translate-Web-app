@@ -274,9 +274,9 @@ let voiceSpeed = 1;
 // Translation history
 let history = JSON.parse(localStorage.getItem('translationHistory')) || [];
 
-// --- NEW LANGUAGES OBJECT ---
+// --- LANGUAGES OBJECT (without "Detect Language") ---
 const LANGUAGES = {
-    "auto": "Detect Language", "af": "Afrikaans", "sq": "Albanian", "am": "Amharic", "ar": "Arabic", "hy": "Armenian", "az": "Azerbaijani",
+    "af": "Afrikaans", "sq": "Albanian", "am": "Amharic", "ar": "Arabic", "hy": "Armenian", "az": "Azerbaijani",
     "eu": "Basque", "be": "Belarusian", "bn": "Bengali", "bs": "Bosnian", "bg": "Bulgarian", "ca": "Catalan", "ceb": "Cebuano", "ny": "Chichewa",
     "zh-CN": "Chinese (Simplified)", "zh-TW": "Chinese (Traditional)", "co": "Corsican", "hr": "Croatian", "cs": "Czech", "da": "Danish",
     "nl": "Dutch", "en": "English", "eo": "Esperanto", "et": "Estonian", "tl": "Filipino", "fi": "Finnish", "fr": "French", "fy": "Frisian",
@@ -310,22 +310,13 @@ function populateLanguageDropdowns() {
         const option = document.createElement('option');
         option.value = code;
         option.textContent = LANGUAGES[code];
-        sourceLanguage.appendChild(option);
-    }
-    
-    // Populate target language dropdown (without "Detect Language")
-    for (const code in LANGUAGES) {
-        if (code === 'auto') continue;
-        const option = document.createElement('option');
-        option.value = code;
-        option.textContent = LANGUAGES[code];
+        sourceLanguage.appendChild(option.cloneNode(true));
         targetLanguage.appendChild(option);
     }
     
     // Set default values
-    sourceLanguage.value = 'auto';
+    sourceLanguage.value = 'en';
     targetLanguage.value = 'si';
-    swapLanguagesBtn.disabled = true; // Disable swap initially
 }
 
 // Setup event listeners
@@ -369,11 +360,7 @@ function setupEventListeners() {
     sourceText.addEventListener('input', debounce(translate, 500));
     
     // Language change
-    sourceLanguage.addEventListener('change', () => {
-        // Disable swap button if 'Detect Language' is selected
-        swapLanguagesBtn.disabled = sourceLanguage.value === 'auto';
-        translate();
-    });
+    sourceLanguage.addEventListener('change', translate);
     targetLanguage.addEventListener('change', translate);
 
     // Settings Panel
@@ -426,26 +413,6 @@ function setupEventListeners() {
     });
 }
 
-/**
- * Normalizes a language code from the API.
- * E.g., converts "en-US" to "en" if "en" exists in our list.
- * @param {string} code The language code to normalize.
- * @returns {string|null} The normalized code.
- */
-function normalizeLangCode(code) {
-    if (!code) return null;
-    if (LANGUAGES[code]) {
-        return code; // Exact match (e.g., "zh-CN")
-    }
-    if (code.includes('-')) {
-        const baseCode = code.split('-')[0];
-        if (LANGUAGES[baseCode]) {
-            return baseCode; // Return base code if it exists (e.g., "en")
-        }
-    }
-    return code; // Fallback to original code
-}
-
 // Debounce function
 function debounce(func, wait) {
     let timeout;
@@ -475,28 +442,16 @@ async function translate() {
     targetText.value = 'Translating...';
 
     try {
-        const result = await performTranslation(sourceTextValue, sourceLang, targetLang);
-
-        if (result && result.translatedText) {
-            targetText.value = result.translatedText;
-            
-            // Add to history only if translation was successful
-            if (!result.translatedText.startsWith('Error:')) {
-                // Use the detected language for history if source was 'auto'
-                const normalizedDetectedCode = normalizeLangCode(result.detectedLangCode);
-                const historySourceLang = sourceLang === 'auto' ? normalizedDetectedCode : sourceLang;
-                // Ensure historySourceLang is not null or undefined before adding
-                if (historySourceLang) {
-                    addToHistory(sourceTextValue, result.translatedText, historySourceLang, targetLang);
-                }
-            }
-        } else {
-             throw new Error("Invalid response from translation service.");
+        const translatedText = await performTranslation(sourceTextValue, sourceLang, targetLang);
+        targetText.value = translatedText;
+        
+        // Add to history only if translation was successful
+        if (translatedText && !translatedText.startsWith('Error:')) {
+            addToHistory(sourceTextValue, translatedText, sourceLang, targetLang);
         }
-
     } catch (error) {
         console.error('Translation Error:', error);
-        targetText.value = 'Error: Could not translate.';
+        targetText.value = error.message.startsWith('Error:') ? error.message : 'Error: Could not translate.';
     } finally {
         translateBtn.innerHTML = '<i class="fas fa-language"></i> Translate';
         translateBtn.disabled = false;
@@ -505,9 +460,7 @@ async function translate() {
 
 // Perform translation using MyMemory API
 async function performTranslation(text, sourceLang, targetLang) {
-    // MyMemory API requires an empty source for auto-detection, not the word 'auto'.
-    const finalSourceLang = sourceLang === 'auto' ? '' : sourceLang;
-    const apiUrl = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${finalSourceLang}|${targetLang}`;
+    const apiUrl = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${sourceLang}|${targetLang}`;
 
     try {
         const response = await fetch(apiUrl);
@@ -518,24 +471,13 @@ async function performTranslation(text, sourceLang, targetLang) {
         
         if (data.responseStatus !== 200 || !data.responseData) {
             const errorMessage = `Error: ${data.responseDetails || 'Translation failed.'}`;
-            console.error("API Error:", errorMessage);
-            return {
-                translatedText: errorMessage,
-                detectedLangCode: 'error'
-            };
+            throw new Error(errorMessage);
         }
         
-        // Return both translated text and the detected language code
-        return {
-            translatedText: data.responseData.translatedText,
-            detectedLangCode: data.responseData.detectedLanguage
-        };
+        return data.responseData.translatedText;
     } catch (error) {
         console.error("API Fetch Error:", error);
-        return { 
-            translatedText: 'Error: Could not connect to the translation service.',
-            detectedLangCode: 'error' 
-        };
+        throw new Error('Error: Could not connect to the translation service.');
     }
 }
 
@@ -783,16 +725,15 @@ function toggleTheme() {
 }
 
 function testVoiceSpeed(speed, lang) {
-    // Use a generic test phrase, or English if lang is 'auto'
     const testPhrase = lang === 'si' ? 'කටහඬ වේගය පරීක්ෂා කිරීම' : 'Testing voice speed';
     if ('speechSynthesis' in window) {
         speechSynthesis.cancel(); // Stop any currently playing speech
         const utterance = new SpeechSynthesisUtterance(testPhrase);
-        utterance.lang = lang === 'auto' ? 'en-US' : lang;
+        utterance.lang = lang;
         utterance.rate = speed;
         speechSynthesis.speak(utterance);
     }
 }
 
 // Initialize the app when DOM is loaded
-document.addEventListener('DOMContentLoaded', init); 
+document.addEventListener('DOMContentLoaded', init);
