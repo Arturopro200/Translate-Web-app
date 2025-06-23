@@ -58,6 +58,8 @@ const logoutPremiumBtn = document.getElementById('logoutPremiumBtn');
 
 // Global state
 let voiceSpeed = 1;
+let voicePitch = 1;
+let voiceVolume = 1;
 let history = []; 
 let isPremium = false;
 const ACTIVATION_KEY = '123456789';
@@ -437,6 +439,70 @@ function setupEventListeners() {
             fileInput.click();
         });
     }
+
+    // Custom Voice Settings (Pitch & Volume)
+    const voicePitchSlider = document.getElementById('voicePitchSlider');
+    const voicePitchValue = document.getElementById('voicePitchValue');
+    const voiceVolumeSlider = document.getElementById('voiceVolumeSlider');
+    const voiceVolumeValue = document.getElementById('voiceVolumeValue');
+    const testVoiceSettingsBtn = document.getElementById('testVoiceSettingsBtn');
+    if (voicePitchSlider && voicePitchValue) {
+        voicePitchSlider.addEventListener('input', (e) => {
+            voicePitch = parseFloat(e.target.value);
+            voicePitchValue.textContent = voicePitch.toFixed(2);
+            localStorage.setItem('voicePitch', voicePitch);
+        });
+    }
+    if (voiceVolumeSlider && voiceVolumeValue) {
+        voiceVolumeSlider.addEventListener('input', (e) => {
+            voiceVolume = parseFloat(e.target.value);
+            voiceVolumeValue.textContent = voiceVolume.toFixed(2);
+            localStorage.setItem('voiceVolume', voiceVolume);
+        });
+    }
+    if (testVoiceSettingsBtn) {
+        testVoiceSettingsBtn.addEventListener('click', () => {
+            if (!isPremium) {
+                showToastNotification('This is a premium feature. Please activate.');
+                return;
+            }
+            testVoiceSpeed(voiceSpeed, sourceLanguage.value, voicePitch, voiceVolume);
+        });
+    }
+
+    const exportHistoryBtn = document.getElementById('exportHistoryBtn');
+    if (exportHistoryBtn) {
+        exportHistoryBtn.addEventListener('click', () => {
+            if (!isPremium) {
+                showToastNotification('This is a premium feature. Please activate.');
+                return;
+            }
+            if (!history || history.length === 0) {
+                showToastNotification('No history to export.');
+                return;
+            }
+            // Export as CSV
+            let csv = 'Source Text,Target Text,Source Language,Target Language,Timestamp\n';
+            history.forEach(item => {
+                // Escape quotes and commas
+                const src = '"' + (item.sourceText || '').replace(/"/g, '""') + '"';
+                const tgt = '"' + (item.targetText || '').replace(/"/g, '""') + '"';
+                const srcLang = '"' + (item.sourceLang || '') + '"';
+                const tgtLang = '"' + (item.targetLang || '') + '"';
+                const ts = '"' + (item.timestamp || '') + '"';
+                csv += [src, tgt, srcLang, tgtLang, ts].join(',') + '\n';
+            });
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'translation_history.csv';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+    }
 }
 
 // Debounce function
@@ -555,6 +621,8 @@ function speakText(text, lang) {
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = lang;
         utterance.rate = voiceSpeed;
+        utterance.pitch = voicePitch;
+        utterance.volume = voiceVolume;
         if (isPremium && selectedVoiceId) {
             const v = pickVoiceById(selectedVoiceId);
             if (v) utterance.voice = v;
@@ -788,6 +856,25 @@ function loadSettings() {
             opt.selected = (opt.value === selectedVoiceId);
         });
     }
+
+    // Load Voice Pitch
+    const savedPitch = parseFloat(localStorage.getItem('voicePitch'));
+    voicePitch = isNaN(savedPitch) ? 1 : savedPitch;
+    const voicePitchSlider = document.getElementById('voicePitchSlider');
+    const voicePitchValue = document.getElementById('voicePitchValue');
+    if (voicePitchSlider && voicePitchValue) {
+        voicePitchSlider.value = voicePitch;
+        voicePitchValue.textContent = voicePitch.toFixed(2);
+    }
+    // Load Voice Volume
+    const savedVolume = parseFloat(localStorage.getItem('voiceVolume'));
+    voiceVolume = isNaN(savedVolume) ? 1 : savedVolume;
+    const voiceVolumeSlider = document.getElementById('voiceVolumeSlider');
+    const voiceVolumeValue = document.getElementById('voiceVolumeValue');
+    if (voiceVolumeSlider && voiceVolumeValue) {
+        voiceVolumeSlider.value = voiceVolume;
+        voiceVolumeValue.textContent = voiceVolume.toFixed(2);
+    }
 }
 
 function toggleTheme() {
@@ -799,13 +886,15 @@ function toggleTheme() {
     }
 }
 
-function testVoiceSpeed(speed, lang) {
-    const testPhrase = lang === 'si' ? 'කටහඬ වේගය පරීක්ෂා කිරීම' : 'Testing voice speed';
+function testVoiceSpeed(speed, lang, pitch = voicePitch, volume = voiceVolume) {
+    const testPhrase = lang === 'si' ? 'කටහඬ වේගය පරීක්ෂා කිරීම' : 'Testing voice settings';
     if ('speechSynthesis' in window) {
         speechSynthesis.cancel();
         const utterance = new SpeechSynthesisUtterance(testPhrase);
         utterance.lang = lang;
         utterance.rate = speed;
+        utterance.pitch = pitch;
+        utterance.volume = volume;
         if (isPremium && selectedVoiceId) {
             const v = pickVoiceById(selectedVoiceId);
             if (v) utterance.voice = v;
@@ -853,6 +942,7 @@ function updateUIForPremiumStatus() {
     const aiVoiceSourceBtn = document.getElementById('aiVoiceSource');
     const aiVoiceTargetBtn = document.getElementById('aiVoiceTarget');
     const adBanner = document.getElementById('adBanner');
+    const exportHistoryBtn = document.getElementById('exportHistoryBtn');
     if (isPremium) {
         dictateBtn.classList.remove('locked');
         dictateBtn.title = "Speak to Type (Dictation)";
@@ -873,6 +963,20 @@ function updateUIForPremiumStatus() {
             aiVoiceTargetBtn.title = "AI Voice (ElevenLabs)";
         }
         if (adBanner) adBanner.style.display = 'none';
+        // Custom Voice Settings (Pitch & Volume)
+        const voicePitchSlider = document.getElementById('voicePitchSlider');
+        const voiceVolumeSlider = document.getElementById('voiceVolumeSlider');
+        const testVoiceSettingsBtn = document.getElementById('testVoiceSettingsBtn');
+        if (voicePitchSlider) voicePitchSlider.disabled = false;
+        if (voiceVolumeSlider) voiceVolumeSlider.disabled = false;
+        if (testVoiceSettingsBtn) {
+            testVoiceSettingsBtn.disabled = false;
+            testVoiceSettingsBtn.title = 'Test Voice Settings';
+        }
+        if (exportHistoryBtn) {
+            exportHistoryBtn.disabled = false;
+            exportHistoryBtn.title = 'Export History';
+        }
     } else {
         dictateBtn.classList.add('locked');
         dictateBtn.title = "Unlock Premium to use Dictation";
@@ -894,6 +998,20 @@ function updateUIForPremiumStatus() {
             aiVoiceTargetBtn.title = "AI Voice (Premium Only)";
         }
         if (adBanner) adBanner.style.display = 'block';
+        // Custom Voice Settings (Pitch & Volume)
+        const voicePitchSlider = document.getElementById('voicePitchSlider');
+        const voiceVolumeSlider = document.getElementById('voiceVolumeSlider');
+        const testVoiceSettingsBtn = document.getElementById('testVoiceSettingsBtn');
+        if (voicePitchSlider) voicePitchSlider.disabled = true;
+        if (voiceVolumeSlider) voiceVolumeSlider.disabled = true;
+        if (testVoiceSettingsBtn) {
+            testVoiceSettingsBtn.disabled = true;
+            testVoiceSettingsBtn.title = 'Premium Only';
+        }
+        if (exportHistoryBtn) {
+            exportHistoryBtn.disabled = true;
+            exportHistoryBtn.title = 'Premium Only';
+        }
     }
 }
 

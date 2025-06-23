@@ -96,9 +96,14 @@
             <div class="history-section">
                 <div class="history-header">
                     <h3>Recent Translations</h3>
-                    <button id="clearHistoryBtn" class="clear-history-btn" title="Clear History">
-                        <i class="fas fa-trash-alt"></i> Clear All
-                    </button>
+                    <div style="display: flex; gap: 8px;">
+                        <button id="exportHistoryBtn" class="export-history-btn" title="Export History (Premium)">
+                            <i class="fas fa-file-export"></i> Export
+                        </button>
+                        <button id="clearHistoryBtn" class="clear-history-btn" title="Clear History">
+                            <i class="fas fa-trash-alt"></i> Clear All
+                        </button>
+                    </div>
                 </div>
                 <div id="translationHistory" class="history-list">
                     <!-- Translation history will be populated here -->
@@ -229,6 +234,18 @@
                 <span id="customSpeedValue">1.0x</span>
                 <button id="testCustomSpeedBtn" class="test-speed-btn" title="Test Custom Speed">
                     <i class="fas fa-play"></i>
+                </button>
+            </div>
+        </div>
+        <div class="settings-section">
+            <h4>Custom Voice Settings <span class="premium-badge">Premium</span></h4>
+            <div class="custom-voice-settings">
+                <label for="voicePitchSlider">Pitch: <span id="voicePitchValue">1.0</span></label>
+                <input type="range" id="voicePitchSlider" min="0" max="2" value="1" step="0.01">
+                <label for="voiceVolumeSlider">Volume: <span id="voiceVolumeValue">1.0</span></label>
+                <input type="range" id="voiceVolumeSlider" min="0" max="1" value="1" step="0.01">
+                <button id="testVoiceSettingsBtn" class="test-speed-btn" title="Test Voice Settings">
+                    <i class="fas fa-play"></i> Test Voice
                 </button>
             </div>
         </div>
