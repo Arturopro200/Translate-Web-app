@@ -1056,7 +1056,18 @@ function updateUIForPremiumStatus() {
     const showFavoritesBtn = document.getElementById('showFavoritesBtn');
     const downloadPdfBtn = document.getElementById('downloadPdfBtn');
     const downloadTxtBtn = document.getElementById('downloadTxtBtn');
+    const themeColorPicker = document.getElementById('themeColorPicker');
+    const headerTitle = document.querySelector('header h1');
     if (isPremium) {
+        // Add premium badge if it doesn't exist
+        if (headerTitle && !document.getElementById('premiumBadge')) {
+            const badge = document.createElement('span');
+            badge.id = 'premiumBadge';
+            badge.className = 'premium-badge';
+            badge.textContent = 'Premium';
+            headerTitle.appendChild(document.createTextNode(' ')); // space before badge
+            headerTitle.appendChild(badge);
+        }
         dictateBtn.classList.remove('locked');
         dictateBtn.title = "Speak to Type (Dictation)";
         unlockPremiumBtn.style.display = 'none';
@@ -1107,6 +1118,8 @@ function updateUIForPremiumStatus() {
             downloadTxtBtn.title = 'Download as TXT';
         }
     } else {
+        const badge = document.getElementById('premiumBadge');
+        if (badge) badge.remove();
         dictateBtn.classList.add('locked');
         dictateBtn.title = "Unlock Premium to use Dictation";
         unlockPremiumBtn.style.display = 'block';
