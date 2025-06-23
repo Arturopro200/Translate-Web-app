@@ -7,16 +7,25 @@ const urlsToCache = [
   '/logo.png',
   '/manifest.json'
 ];
+const OFFLINE_URL = '/offline.html';
 
 self.addEventListener('install', event => {
   self.skipWaiting(); // Activate new SW immediately
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(urlsToCache))
+      .then(cache => cache.addAll([...urlsToCache, OFFLINE_URL]))
   );
 });
 
 self.addEventListener('fetch', event => {
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request).catch(() =>
+        caches.match(OFFLINE_URL)
+      )
+    );
+    return;
+  }
   event.respondWith(
     caches.match(event.request)
       .then(response => response || fetch(event.request))
