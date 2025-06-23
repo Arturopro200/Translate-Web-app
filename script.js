@@ -81,6 +81,25 @@ const LANGUAGES = {
     "cy": "Welsh", "xh": "Xhosa", "yi": "Yiddish", "yo": "Yoruba", "zu": "Zulu"
 };
 
+const voiceGenderSection = document.querySelector('.voice-gender-section');
+const voiceGenderRadios = document.getElementsByName('voiceGender');
+let voiceGender = localStorage.getItem('voiceGender') || 'female';
+let availableVoices = [];
+
+const voiceSelectSection = document.querySelector('.voice-select-section');
+const voiceSelect = document.getElementById('voiceSelect');
+const voiceSelectDisabledText = document.querySelector('.voice-select-disabled-text');
+let selectedVoiceId = localStorage.getItem('selectedVoiceId') || '';
+
+// Load voices (browser TTS)
+function loadVoices() {
+    availableVoices = speechSynthesis.getVoices();
+}
+if ('speechSynthesis' in window) {
+    loadVoices();
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+}
+
 // Initialize the app
 function init() {
     checkPremiumStatus();
@@ -288,6 +307,97 @@ function setupEventListeners() {
             recognition.start();
         }
     }
+
+    // Show warning if free user tries to exceed 500 chars
+    sourceText.addEventListener('keydown', function(e) {
+        if (!isPremium && sourceText.value.length >= 500 && e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+            showCharLimitWarning();
+            e.preventDefault();
+        }
+    });
+
+    // Voice gender radio change event
+    voiceGenderRadios.forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                voiceGender = e.target.value;
+                localStorage.setItem('voiceGender', voiceGender);
+            }
+        });
+    });
+
+    const aiVoiceSourceBtn = document.getElementById('aiVoiceSource');
+    const aiVoiceTargetBtn = document.getElementById('aiVoiceTarget');
+
+    // ElevenLabs API conf
+    const ELEVENLABS_API_KEY = 'sk_10d820e6a1714e06d26daccc8db6feac7c0b511d685d17f1'; 
+    const ELEVENLABS_VOICE_ID = 'EXAVITQu4vr4xnSDxMaL'; 
+    const ELEVENLABS_URL = `https://api.elevenlabs.io/v1/text-to-speech/${ELEVENLABS_VOICE_ID}`;
+
+    async function playAIVoice(text) {
+        if (!text || !ELEVENLABS_API_KEY) {
+            showToastNotification('AI Voice unavailable.');
+            return;
+        }
+        // Only support English for demo
+        if (!/^[\x00-\x7F]+$/.test(text)) {
+            showToastNotification('AI Voice: Only English supported in demo.');
+            return;
+        }
+        try {
+            const response = await fetch(ELEVENLABS_URL, {
+                method: 'POST',
+                headers: {
+                    'xi-api-key': ELEVENLABS_API_KEY,
+                    'Content-Type': 'application/json',
+                    'Accept': 'audio/mpeg',
+                },
+                body: JSON.stringify({
+                    text,
+                    model_id: 'eleven_monolingual_v1',
+                    voice_settings: { stability: 0.5, similarity_boost: 0.7 }
+                })
+            });
+            if (!response.ok) throw new Error('AI Voice API error');
+            const audioBlob = await response.blob();
+            const audioUrl = URL.createObjectURL(audioBlob);
+            const audio = new Audio(audioUrl);
+            audio.play();
+        } catch (err) {
+            showToastNotification('AI Voice error.');
+        }
+    }
+
+    if (aiVoiceSourceBtn) {
+        aiVoiceSourceBtn.addEventListener('click', async () => {
+            if (!isPremium) {
+                activationModal.style.display = 'block';
+                activationKeyInput.focus();
+                showToastNotification('This is a premium feature. Please activate.');
+                return;
+            }
+            aiVoiceSourceBtn.disabled = true;
+            aiVoiceSourceBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            await playAIVoice(sourceText.value);
+            aiVoiceSourceBtn.innerHTML = '<i class="fas fa-robot"></i>';
+            aiVoiceSourceBtn.disabled = false;
+        });
+    }
+    if (aiVoiceTargetBtn) {
+        aiVoiceTargetBtn.addEventListener('click', async () => {
+            if (!isPremium) {
+                activationModal.style.display = 'block';
+                activationKeyInput.focus();
+                showToastNotification('This is a premium feature. Please activate.');
+                return;
+            }
+            aiVoiceTargetBtn.disabled = true;
+            aiVoiceTargetBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            await playAIVoice(targetText.value);
+            aiVoiceTargetBtn.innerHTML = '<i class="fas fa-robot"></i>';
+            aiVoiceTargetBtn.disabled = false;
+        });
+    }
 }
 
 // Debounce function
@@ -402,10 +512,14 @@ function copyTranslation() {
 // Text-to-speech
 function speakText(text, lang) {
     if ('speechSynthesis' in window && text) {
-        speechSynthesis.cancel(); // Cancel any previous speech
+        speechSynthesis.cancel();
         const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = lang; // Use the language code directly
-        utterance.rate = voiceSpeed; // Use selected voice speed
+        utterance.lang = lang;
+        utterance.rate = voiceSpeed;
+        if (isPremium && selectedVoiceId) {
+            const v = pickVoiceById(selectedVoiceId);
+            if (v) utterance.voice = v;
+        }
         speechSynthesis.speak(utterance);
     }
 }
@@ -534,6 +648,34 @@ function updateCharCounter() {
     const maxLength = isPremium ? 10000 : 500;
     sourceText.maxLength = maxLength;
     charCounter.textContent = `${currentLength} / ${maxLength}`;
+    charCounter.classList.remove('limit-reached', 'premium');
+    if (isPremium) {
+        charCounter.classList.add('premium');
+    } else if (currentLength >= maxLength) {
+        charCounter.classList.add('limit-reached');
+    }
+}
+
+// Show warning if free user tries to exceed 500 chars
+sourceText.addEventListener('keydown', function(e) {
+    if (!isPremium && sourceText.value.length >= 500 && e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        showCharLimitWarning();
+        e.preventDefault();
+    }
+});
+
+function showCharLimitWarning() {
+    let warning = document.querySelector('.char-limit-warning');
+    if (!warning) {
+        warning = document.createElement('div');
+        warning.className = 'char-limit-warning';
+        warning.textContent = 'Free version: Maximum 500 characters allowed. Upgrade to Premium for 10,000!';
+        document.body.appendChild(warning);
+    }
+    warning.classList.add('show');
+    setTimeout(() => {
+        warning.classList.remove('show');
+    }, 2500);
 }
 
 // Clear history
@@ -595,6 +737,18 @@ function loadSettings() {
         // If no preset matches, it's a custom speed, so uncheck all radios.
         voiceSpeedRadios.forEach(radio => radio.checked = false);
     }
+
+    // Load Voice Gender
+    voiceGender = localStorage.getItem('voiceGender') || 'female';
+    voiceGenderRadios.forEach(r => r.checked = (r.value === voiceGender));
+
+    // Load selected voice
+    selectedVoiceId = localStorage.getItem('selectedVoiceId') || '';
+    if (voiceSelect) {
+        Array.from(voiceSelect.options).forEach(opt => {
+            opt.selected = (opt.value === selectedVoiceId);
+        });
+    }
 }
 
 function toggleTheme() {
@@ -609,10 +763,14 @@ function toggleTheme() {
 function testVoiceSpeed(speed, lang) {
     const testPhrase = lang === 'si' ? 'කටහඬ වේගය පරීක්ෂා කිරීම' : 'Testing voice speed';
     if ('speechSynthesis' in window) {
-        speechSynthesis.cancel(); // Stop any currently playing speech
+        speechSynthesis.cancel();
         const utterance = new SpeechSynthesisUtterance(testPhrase);
         utterance.lang = lang;
         utterance.rate = speed;
+        if (isPremium && selectedVoiceId) {
+            const v = pickVoiceById(selectedVoiceId);
+            if (v) utterance.voice = v;
+        }
         speechSynthesis.speak(utterance);
     }
 }
@@ -652,31 +810,48 @@ function checkPremiumStatus() {
 }
 
 function updateUIForPremiumStatus() {
-    updateCharCounter(); // Update counter based on premium status
-
+    updateCharCounter();
+    const aiVoiceSourceBtn = document.getElementById('aiVoiceSource');
+    const aiVoiceTargetBtn = document.getElementById('aiVoiceTarget');
     if (isPremium) {
-        // Add premium badge if it doesn't exist
-        if (!document.getElementById('premiumBadge')) {
-            const badge = document.createElement('span');
-            badge.id = 'premiumBadge';
-            badge.className = 'premium-badge';
-            badge.textContent = 'Premium';
-            headerTitle.appendChild(badge);
-        }
-        
         dictateBtn.classList.remove('locked');
         dictateBtn.title = "Speak to Type (Dictation)";
         unlockPremiumBtn.style.display = 'none';
         logoutPremiumBtn.classList.remove('hidden');
-    } else {
-        const badge = document.getElementById('premiumBadge');
-        if (badge) {
-            badge.remove();
+        if (voiceGenderSection) voiceGenderSection.classList.remove('hidden');
+        // Enable gender radios
+        voiceGenderRadios.forEach(r => r.disabled = false);
+        if (voiceSelectSection) {
+            voiceSelectSection.classList.remove('hidden', 'disabled');
+            if (voiceSelect) voiceSelect.disabled = false;
+            if (voiceSelectDisabledText) voiceSelectDisabledText.style.display = 'none';
         }
+        if (aiVoiceSourceBtn) {
+            aiVoiceSourceBtn.title = "AI Voice (ElevenLabs)";
+        }
+        if (aiVoiceTargetBtn) {
+            aiVoiceTargetBtn.title = "AI Voice (ElevenLabs)";
+        }
+    } else {
         dictateBtn.classList.add('locked');
         dictateBtn.title = "Unlock Premium to use Dictation";
         unlockPremiumBtn.style.display = 'block';
         logoutPremiumBtn.classList.add('hidden');
+        if (voiceGenderSection) voiceGenderSection.classList.add('hidden');
+        // Disable gender radios
+        voiceGenderRadios.forEach(r => r.disabled = true);
+        if (voiceSelectSection) {
+            voiceSelectSection.classList.remove('hidden');
+            voiceSelectSection.classList.add('disabled');
+            if (voiceSelect) voiceSelect.disabled = true;
+            if (voiceSelectDisabledText) voiceSelectDisabledText.style.display = 'block';
+        }
+        if (aiVoiceSourceBtn) {
+            aiVoiceSourceBtn.title = "AI Voice (Premium Only)";
+        }
+        if (aiVoiceTargetBtn) {
+            aiVoiceTargetBtn.title = "AI Voice (Premium Only)";
+        }
     }
 }
 
@@ -689,7 +864,7 @@ function activatePremium() {
         activationModal.style.display = 'none';
         activationKeyInput.value = '';
         activationError.textContent = '';
-        showToastNotification('Premium features activated successfully!');
+        showToastNotification('Premium features activated successfully! You can now translate up to 10,000 characters.');
     } else {
         activationError.textContent = 'Invalid activation key. Please try again.';
         activationKeyInput.value = '';
@@ -701,6 +876,66 @@ function logoutPremium() {
     localStorage.removeItem('isPremium');
     updateUIForPremiumStatus();
     showToastNotification('You have logged out from premium.');
+}
+
+// Pick a voice by language & gender
+function pickVoice(lang, gender) {
+    if (!availableVoices.length) return null;
+    // Try to find exact match
+    let voices = availableVoices.filter(v => v.lang.startsWith(lang) && v.gender === gender);
+    if (!voices.length) {
+        // Some browsers don't set gender, so try by name
+        voices = availableVoices.filter(v => v.lang.startsWith(lang) && v.name.toLowerCase().includes(gender));
+    }
+    if (!voices.length) {
+        // Fallback: any voice for lang
+        voices = availableVoices.filter(v => v.lang.startsWith(lang));
+    }
+    return voices[0] || availableVoices[0];
+}
+
+// Pick a voice by voiceId
+function pickVoiceById(voiceId) {
+    if (!availableVoices.length) return null;
+    return availableVoices.find(v => v.voiceURI === voiceId) || availableVoices[0];
+}
+
+// Load voices and populate select
+function populateVoiceSelect() {
+    if (!voiceSelect) return;
+    voiceSelect.innerHTML = '';
+    availableVoices.forEach((v, i) => {
+        const option = document.createElement('option');
+        option.value = v.voiceURI;
+        let label = v.name;
+        // Sinhala highlight
+        if (v.lang === 'si-LK' || v.lang === 'si') {
+            label += ' (සිංහල, Sri Lanka';
+            if (v.gender) label += ', ' + v.gender;
+            label += ')';
+        } else {
+            label += ` (${v.lang}`;
+            if (v.gender) label += ', ' + v.gender;
+            label += ')';
+        }
+        option.textContent = label;
+        if (selectedVoiceId === v.voiceURI) option.selected = true;
+        voiceSelect.appendChild(option);
+    });
+}
+if ('speechSynthesis' in window) {
+    loadVoices();
+    window.speechSynthesis.onvoiceschanged = () => {
+        loadVoices();
+        populateVoiceSelect();
+    };
+    setTimeout(populateVoiceSelect, 500); // fallback for some browsers
+}
+if (voiceSelect) {
+    voiceSelect.addEventListener('change', (e) => {
+        selectedVoiceId = e.target.value;
+        localStorage.setItem('selectedVoiceId', selectedVoiceId);
+    });
 }
 
 // Initialize the app when DOM is loaded

@@ -58,6 +58,9 @@
                             <button id="speakSource" class="speak-btn" title="Speak Source Text">
                                 <i class="fas fa-volume-up"></i>
                             </button>
+                            <button id="aiVoiceSource" class="ai-voice-btn" title="AI Voice (ElevenLabs)">
+                                <i class="fas fa-robot"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -71,6 +74,9 @@
                             </button>
                             <button id="speakTarget" class="speak-btn" title="Speak Translation">
                                 <i class="fas fa-volume-up"></i>
+                            </button>
+                            <button id="aiVoiceTarget" class="ai-voice-btn" title="AI Voice (ElevenLabs)">
+                                <i class="fas fa-robot"></i>
                             </button>
                         </div>
                     </div>
@@ -218,6 +224,13 @@
                     <i class="fas fa-play"></i>
                 </button>
             </div>
+        </div>
+        <div class="settings-section voice-select-section hidden">
+            <h4>Voice <span class="premium-badge">Premium</span></h4>
+            <select id="voiceSelect" disabled>
+                <option>Loading voices...</option>
+            </select>
+            <span class="voice-select-disabled-text">Premium only: Activate to select a custom voice</span>
         </div>
     </div>
 
