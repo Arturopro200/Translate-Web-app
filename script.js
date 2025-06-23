@@ -62,7 +62,7 @@ let voicePitch = 1;
 let voiceVolume = 1;
 let history = []; 
 let isPremium = false;
-const ACTIVATION_KEYS = ['123456789', 'janith123'];
+const ACTIVATION_KEYS = ['123456789', 'nice001'];
 let favorites = [];
 
 // --- LANGUAGES OBJECT (without "Detect Language") ---
