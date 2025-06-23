@@ -1,9 +1,24 @@
+<img src="https://github.com/janithsuraweera/Translate-Web-app/blob/main/img/logo.png?raw=true" alt="Logo" width="70" align="left"/>
+  
 # Translate Web App - Premium Edition
+
+
 
 A modern, powerful, and fully responsive web application for translating text between dozens of languages. It's built with clean HTML, modern CSS, and vanilla JavaScript, and it uses the MyMemory API for real-time translations. The app includes premium features like voice dictation and an activation system.
 
-![image](https://github.com/user-attachments/assets/e5229237-724f-4a94-9640-c3d3e6913c32)
+![image](https://github.com/janithsuraweera/Translate-Web-app/blob/main/img/6.png)
+<p align="center">
+  <img src="https://github.com/janithsuraweera/Translate-Web-app/blob/main/img/1.png?raw=true" alt="Light Mode" width="400"/>
+  <img src="https://github.com/janithsuraweera/Translate-Web-app/blob/main/img/2.png?raw=true" alt="Dark Mode" width="400"/>
+      <img src="https://github.com/janithsuraweera/Translate-Web-app/blob/main/img/5.png?raw=true" alt="Premium Mode" width="400"/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    
+<img src="https://github.com/janithsuraweera/Translate-Web-app/blob/main/img/3.png?raw=true" alt="Settings" width="280" height="330"/>
 
+
+
+</p>
+  
+  
 ## ✨ Key Features
 
 - **Multi-Language Support**: Translate text between dozens of languages, not just English and Sinhala.
