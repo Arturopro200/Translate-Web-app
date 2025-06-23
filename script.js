@@ -852,6 +852,7 @@ function updateUIForPremiumStatus() {
     updateCharCounter();
     const aiVoiceSourceBtn = document.getElementById('aiVoiceSource');
     const aiVoiceTargetBtn = document.getElementById('aiVoiceTarget');
+    const adBanner = document.getElementById('adBanner');
     if (isPremium) {
         dictateBtn.classList.remove('locked');
         dictateBtn.title = "Speak to Type (Dictation)";
@@ -871,6 +872,7 @@ function updateUIForPremiumStatus() {
         if (aiVoiceTargetBtn) {
             aiVoiceTargetBtn.title = "AI Voice (ElevenLabs)";
         }
+        if (adBanner) adBanner.style.display = 'none';
     } else {
         dictateBtn.classList.add('locked');
         dictateBtn.title = "Unlock Premium to use Dictation";
@@ -891,6 +893,7 @@ function updateUIForPremiumStatus() {
         if (aiVoiceTargetBtn) {
             aiVoiceTargetBtn.title = "AI Voice (Premium Only)";
         }
+        if (adBanner) adBanner.style.display = 'block';
     }
 }
 
