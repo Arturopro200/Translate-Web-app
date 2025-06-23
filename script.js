@@ -398,6 +398,45 @@ function setupEventListeners() {
             aiVoiceTargetBtn.disabled = false;
         });
     }
+
+    const uploadFileBtn = document.getElementById('uploadFileBtn');
+    if (uploadFileBtn) {
+        uploadFileBtn.addEventListener('click', () => {
+            if (!isPremium) {
+                activationModal.style.display = 'block';
+                activationKeyInput.focus();
+                showToastNotification('This is a premium feature. Please activate.');
+                return;
+            }
+            // Create file input dynamically
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = '.txt,application/pdf';
+            fileInput.style.display = 'none';
+            document.body.appendChild(fileInput);
+            fileInput.addEventListener('change', async (e) => {
+                const file = fileInput.files[0];
+                if (!file) return;
+                if (file.type === 'text/plain' || file.name.endsWith('.txt')) {
+                    // TXT file
+                    const reader = new FileReader();
+                    reader.onload = function(evt) {
+                        sourceText.value = evt.target.result;
+                        updateCharCounter();
+                    };
+                    reader.readAsText(file);
+                } else if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
+                    // PDF file
+                    showToastNotification('PDF parsing requires internet. Please use TXT for now or integrate pdf.js.');
+                    // Placeholder: You can integrate pdf.js here for real PDF parsing
+                } else {
+                    showToastNotification('Unsupported file type. Please upload a PDF or TXT file.');
+                }
+                document.body.removeChild(fileInput);
+            });
+            fileInput.click();
+        });
+    }
 }
 
 // Debounce function
