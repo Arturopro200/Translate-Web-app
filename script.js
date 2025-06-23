@@ -288,6 +288,14 @@ function setupEventListeners() {
             recognition.start();
         }
     }
+
+    // Show warning if free user tries to exceed 500 chars
+    sourceText.addEventListener('keydown', function(e) {
+        if (!isPremium && sourceText.value.length >= 500 && e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+            showCharLimitWarning();
+            e.preventDefault();
+        }
+    });
 }
 
 // Debounce function
@@ -534,6 +542,34 @@ function updateCharCounter() {
     const maxLength = isPremium ? 10000 : 500;
     sourceText.maxLength = maxLength;
     charCounter.textContent = `${currentLength} / ${maxLength}`;
+    charCounter.classList.remove('limit-reached', 'premium');
+    if (isPremium) {
+        charCounter.classList.add('premium');
+    } else if (currentLength >= maxLength) {
+        charCounter.classList.add('limit-reached');
+    }
+}
+
+// Show warning if free user tries to exceed 500 chars
+sourceText.addEventListener('keydown', function(e) {
+    if (!isPremium && sourceText.value.length >= 500 && e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        showCharLimitWarning();
+        e.preventDefault();
+    }
+});
+
+function showCharLimitWarning() {
+    let warning = document.querySelector('.char-limit-warning');
+    if (!warning) {
+        warning = document.createElement('div');
+        warning.className = 'char-limit-warning';
+        warning.textContent = 'Free version: Maximum 500 characters allowed. Upgrade to Premium for 10,000!';
+        document.body.appendChild(warning);
+    }
+    warning.classList.add('show');
+    setTimeout(() => {
+        warning.classList.remove('show');
+    }, 2500);
 }
 
 // Clear history
@@ -689,7 +725,7 @@ function activatePremium() {
         activationModal.style.display = 'none';
         activationKeyInput.value = '';
         activationError.textContent = '';
-        showToastNotification('Premium features activated successfully!');
+        showToastNotification('Premium features activated successfully! You can now translate up to 10,000 characters.');
     } else {
         activationError.textContent = 'Invalid activation key. Please try again.';
         activationKeyInput.value = '';
