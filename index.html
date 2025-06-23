@@ -201,41 +201,16 @@
                     <label>
                         <input type="radio" name="voiceSpeed" value="1" checked> Normal
                     </label>
-                    <button class="test-speed-btn" data-speed="1" title="Test Speed">
-                        <i class="fas fa-play"></i>
-                    </button>
                 </div>
                 <div class="voice-speed-option">
                     <label>
                         <input type="radio" name="voiceSpeed" value="0.8"> Slow
                     </label>
-                    <button class="test-speed-btn" data-speed="0.8" title="Test Speed">
-                        <i class="fas fa-play"></i>
-                    </button>
-                </div>
-                <div class="voice-speed-option">
-                    <label>
-                        <input type="radio" name="voiceSpeed" value="0.5"> Slower
-                    </label>
-                    <button class="test-speed-btn" data-speed="0.5" title="Test Speed">
-                        <i class="fas fa-play"></i>
-                    </button>
                 </div>
                 <div class="voice-speed-option">
                     <label>
                         <input type="radio" name="voiceSpeed" value="1.5"> Fast
                     </label>
-                    <button class="test-speed-btn" data-speed="1.5" title="Test Speed">
-                        <i class="fas fa-play"></i>
-                    </button>
-                </div>
-                <div class="voice-speed-option">
-                    <label>
-                        <input type="radio" name="voiceSpeed" value="2"> Faster
-                    </label>
-                    <button class="test-speed-btn" data-speed="2" title="Test Speed">
-                        <i class="fas fa-play"></i>
-                    </button>
                 </div>
             </div>
         </div>
@@ -249,6 +224,13 @@
                 </button>
             </div>
         </div>
+        <div class="settings-section voice-select-section hidden">
+            <h4>Voice <span class="premium-badge">Premium</span></h4>
+            <select id="voiceSelect" disabled>
+                <option>Loading voices...</option>
+            </select>
+            <span class="voice-select-disabled-text">Premium only: Activate to select a custom voice</span>
+        </div>
         <div class="settings-section">
             <h4>Custom Voice Settings <span class="premium-badge">Premium</span></h4>
             <div class="custom-voice-settings">
@@ -260,13 +242,6 @@
                     <i class="fas fa-play"></i> Test Voice
                 </button>
             </div>
-        </div>
-        <div class="settings-section voice-select-section hidden">
-            <h4>Voice <span class="premium-badge">Premium</span></h4>
-            <select id="voiceSelect" disabled>
-                <option>Loading voices...</option>
-            </select>
-            <span class="voice-select-disabled-text">Premium only: Activate to select a custom voice</span>
         </div>
     </div>
 
@@ -283,6 +258,8 @@
             <p id="activationError" class="activation-error-msg"></p>
         </div>
     </div>
+
+    <div id="toastNotification" class="toast-notification"></div>
 
     <script src="script.js"></script>
 </body>

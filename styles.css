@@ -919,25 +919,41 @@ footer p {
 /* Toast Notification */
 .toast-notification {
     position: fixed;
-    bottom: 30px;
     left: 50%;
-    transform: translateX(-50%);
-    background-color: #323232;
-    color: white;
-    padding: 14px 25px;
-    border-radius: 50px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-    z-index: 2000;
-    font-size: 0.95rem;
+    bottom: 40px;
+    transform: translateX(-50%) scale(0.95);
+    min-width: 240px;
+    max-width: 90vw;
+    background: var(--container-bg);
+    color: var(--text-color);
+    padding: 16px 32px;
+    border-radius: 16px;
+    font-size: 1.08rem;
+    box-shadow: 0 6px 32px rgba(0,0,0,0.18);
     opacity: 0;
-    transition: all 0.4s ease;
-    display: none;
-}
-
-.toast-notification.show {
+    pointer-events: none;
+    z-index: 3000;
+    transition: opacity 0.3s, transform 0.3s;
     display: block;
-    opacity: 1;
-    transform: translate(-50%, 0);
+    text-align: center;
+    font-weight: 500;
+    border: 1.5px solid var(--border-color);
+}
+.toast-notification.show {
+    opacity: 0.97;
+    pointer-events: auto;
+    transform: translateX(-50%) scale(1);
+    animation: toastPop 0.4s;
+}
+@keyframes toastPop {
+    0% { transform: translateX(-50%) scale(0.8); opacity: 0; }
+    60% { transform: translateX(-50%) scale(1.05); opacity: 1; }
+    100% { transform: translateX(-50%) scale(1); opacity: 0.97; }
+}
+body.dark-mode .toast-notification {
+    background: #222b3a;
+    color: #f0f2f5;
+    border-color: #3a4a5b;
 }
 /* Remaining styles for language selector, text areas, buttons etc. */
 .language-selector {

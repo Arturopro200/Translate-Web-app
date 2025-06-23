@@ -215,13 +215,7 @@ function setupEventListeners() {
     });
 
     // Voice Speed Test Buttons
-    const voiceSpeedTestBtns = document.querySelectorAll('.test-speed-btn');
-    voiceSpeedTestBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const speed = parseFloat(e.currentTarget.dataset.speed);
-            testVoiceSpeed(speed, sourceLanguage.value);
-        });
-    });
+    bindVoiceSpeedTestBtns();
 
     // --- PREMIUM FEATURE LISTENERS ---
     unlockPremiumBtn.addEventListener('click', () => {
@@ -905,22 +899,15 @@ function executeClearHistory() {
 
 // Show Toast Notification
 function showToastNotification(message) {
-    const notification = document.createElement('div');
-    notification.className = 'toast-notification';
-    notification.textContent = message;
-    document.body.appendChild(notification);
-
-    // Show notification
-    setTimeout(() => {
-        notification.classList.add('show');
-    }, 100);
-
-    // Hide and remove notification after 3 seconds
-    setTimeout(() => {
-        notification.classList.remove('show');
-        setTimeout(() => {
-            document.body.removeChild(notification);
-        }, 500); // Wait for fade out animation
+    const toast = document.getElementById('toastNotification');
+    if (!toast) return;
+    toast.textContent = message;
+    toast.classList.add('show');
+    // Remove any previous timeout
+    if (toast.toastTimeout) clearTimeout(toast.toastTimeout);
+    // Hide after 3s
+    toast.toastTimeout = setTimeout(() => {
+        toast.classList.remove('show');
     }, 3000);
 }
 
@@ -1257,4 +1244,20 @@ if (voiceSelect) {
 }
 
 // Initialize the app when DOM is loaded
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', () => {
+    init();
+    bindVoiceSpeedTestBtns();
+});
+
+function bindVoiceSpeedTestBtns() {
+    const voiceSpeedTestBtns = document.querySelectorAll('.test-speed-btn');
+    voiceSpeedTestBtns.forEach(btn => {
+        btn.removeEventListener('click', btn._voiceTestHandler || (()=>{})); // Remove previous if any
+        const handler = (e) => {
+            const speed = parseFloat(e.currentTarget.dataset.speed);
+            testVoiceSpeed(speed, sourceLanguage.value);
+        };
+        btn.addEventListener('click', handler);
+        btn._voiceTestHandler = handler;
+    });
+}
