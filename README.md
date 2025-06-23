@@ -2,7 +2,18 @@
   
 # Translate Web App - Premium Edition
 
+## About
 
+**Translate Web App** is a modern, powerful, and fully responsive web application for translating text between dozens of languages. Built with clean HTML, modern CSS, and vanilla JavaScript, it features:
+
+- **Beautiful, modern UI/UX** with smooth animations and a premium look.
+- **Perfect mobile optimization**: Every part of the app is designed to look and work great on any phone, tablet, or desktop.
+- **Clickable ad banner**: The ad at the bottom links to the developer's portfolio ([see here](https://janithsuraweera.github.io/Portfolio/#)).
+- **Premium features**: Voice dictation, custom voice settings, and more, unlockable via activation key.
+- **Advanced theming**: Light/Dark mode with a compact, touch-friendly toggle.
+- **Full translation history management** and instant feedback for all actions.
+
+---
 
 A modern, powerful, and fully responsive web application for translating text between dozens of languages. It's built with clean HTML, modern CSS, and vanilla JavaScript, and it uses the MyMemory API for real-time translations. The app includes premium features like voice dictation and an activation system.
 
