@@ -48,8 +48,8 @@ const testCustomSpeedBtn = document.getElementById('testCustomSpeedBtn');
 // Global state
 let voiceSpeed = 1;
 
-// Translation history
-let history = JSON.parse(localStorage.getItem('translationHistory')) || [];
+// Translation history - now loaded from cookies
+let history = []; 
 
 // --- LANGUAGES OBJECT (without "Detect Language") ---
 const LANGUAGES = {
@@ -328,7 +328,8 @@ function addToHistory(sourceText, targetText, sourceLang, targetLang) {
         history = history.slice(0, 50);
     }
     
-    localStorage.setItem('translationHistory', JSON.stringify(history));
+    // Save history to a cookie
+    setCookie('translationHistory', JSON.stringify(history), 30); // Saves for 30 days
     loadHistory();
 
     // Animate the new item
@@ -340,6 +341,9 @@ function addToHistory(sourceText, targetText, sourceLang, targetLang) {
 
 // Load and display history
 function loadHistory() {
+    const historyCookie = getCookie('translationHistory');
+    history = historyCookie ? JSON.parse(historyCookie) : [];
+    
     translationHistory.innerHTML = '';
     
     if (history.length === 0) {
@@ -434,7 +438,7 @@ function updateCharCounter() {
 // Clear history
 function executeClearHistory() {
     history = [];
-    localStorage.removeItem('translationHistory');
+    eraseCookie('translationHistory'); // Erase the cookie
     loadHistory();
     confirmModal.style.display = 'none';
     showToastNotification('History cleared successfully!');
@@ -510,6 +514,32 @@ function testVoiceSpeed(speed, lang) {
         utterance.rate = speed;
         speechSynthesis.speak(utterance);
     }
+}
+
+// --- COOKIE HELPER FUNCTIONS ---
+function setCookie(name, value, days) {
+    let expires = "";
+    if (days) {
+        const date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "")  + expires + "; path=/; SameSite=Lax";
+}
+
+function getCookie(name) {
+    const nameEQ = name + "=";
+    const ca = document.cookie.split(';');
+    for(let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
+}
+
+function eraseCookie(name) {   
+    document.cookie = name+'=; Max-Age=-99999999; path=/;';
 }
 
 // Initialize the app when DOM is loaded
