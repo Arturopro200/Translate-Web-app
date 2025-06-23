@@ -426,6 +426,26 @@ function setupEventListeners() {
     });
 }
 
+/**
+ * Normalizes a language code from the API.
+ * E.g., converts "en-US" to "en" if "en" exists in our list.
+ * @param {string} code The language code to normalize.
+ * @returns {string|null} The normalized code.
+ */
+function normalizeLangCode(code) {
+    if (!code) return null;
+    if (LANGUAGES[code]) {
+        return code; // Exact match (e.g., "zh-CN")
+    }
+    if (code.includes('-')) {
+        const baseCode = code.split('-')[0];
+        if (LANGUAGES[baseCode]) {
+            return baseCode; // Return base code if it exists (e.g., "en")
+        }
+    }
+    return code; // Fallback to original code
+}
+
 // Debounce function
 function debounce(func, wait) {
     let timeout;
@@ -455,15 +475,25 @@ async function translate() {
     targetText.value = 'Translating...';
 
     try {
-        const { translatedText, detectedLangCode } = await performTranslation(sourceTextValue, sourceLang, targetLang);
-        targetText.value = translatedText;
-        
-        // Add to history only if translation was successful
-        if (translatedText && !translatedText.startsWith('Error:')) {
-            // Use the detected language for history if source was 'auto'
-            const historySourceLang = sourceLang === 'auto' ? detectedLangCode : sourceLang;
-            addToHistory(sourceTextValue, translatedText, historySourceLang, targetLang);
+        const result = await performTranslation(sourceTextValue, sourceLang, targetLang);
+
+        if (result && result.translatedText) {
+            targetText.value = result.translatedText;
+            
+            // Add to history only if translation was successful
+            if (!result.translatedText.startsWith('Error:')) {
+                // Use the detected language for history if source was 'auto'
+                const normalizedDetectedCode = normalizeLangCode(result.detectedLangCode);
+                const historySourceLang = sourceLang === 'auto' ? normalizedDetectedCode : sourceLang;
+                // Ensure historySourceLang is not null or undefined before adding
+                if (historySourceLang) {
+                    addToHistory(sourceTextValue, result.translatedText, historySourceLang, targetLang);
+                }
+            }
+        } else {
+             throw new Error("Invalid response from translation service.");
         }
+
     } catch (error) {
         console.error('Translation Error:', error);
         targetText.value = 'Error: Could not translate.';
@@ -475,9 +505,9 @@ async function translate() {
 
 // Perform translation using MyMemory API
 async function performTranslation(text, sourceLang, targetLang) {
-    // The API uses 'auto' for language detection
-    const langPair = `${sourceLang}|${targetLang}`;
-    const apiUrl = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${langPair}`;
+    // MyMemory API requires an empty source for auto-detection, not the word 'auto'.
+    const finalSourceLang = sourceLang === 'auto' ? '' : sourceLang;
+    const apiUrl = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${finalSourceLang}|${targetLang}`;
 
     try {
         const response = await fetch(apiUrl);
@@ -486,8 +516,13 @@ async function performTranslation(text, sourceLang, targetLang) {
         }
         const data = await response.json();
         
-        if (data.responseStatus !== 200) {
-            throw new Error(`API Error: ${data.responseDetails}`);
+        if (data.responseStatus !== 200 || !data.responseData) {
+            const errorMessage = `Error: ${data.responseDetails || 'Translation failed.'}`;
+            console.error("API Error:", errorMessage);
+            return {
+                translatedText: errorMessage,
+                detectedLangCode: 'error'
+            };
         }
         
         // Return both translated text and the detected language code
@@ -497,7 +532,10 @@ async function performTranslation(text, sourceLang, targetLang) {
         };
     } catch (error) {
         console.error("API Fetch Error:", error);
-        return { translatedText: 'Error: Could not connect to the translation service.' };
+        return { 
+            translatedText: 'Error: Could not connect to the translation service.',
+            detectedLangCode: 'error' 
+        };
     }
 }
 
@@ -600,8 +638,7 @@ function loadHistory() {
         const sourceLangName = LANGUAGES[item.sourceLang] || 'Unknown';
         const targetLangName = LANGUAGES[item.targetLang] || 'Unknown';
         
-        historyItem.innerHTML = `
-            <div class="lang-pair">${sourceLangName} → ${targetLangName}</div>
+        historyItem.innerHTML = `            <div class="lang-pair">${sourceLangName} → ${targetLangName}</div>
             <div class="source-text">${item.sourceText}</div>
             <div class="target-text">${item.targetText}</div>
             <div class="timestamp">${item.timestamp}</div>
