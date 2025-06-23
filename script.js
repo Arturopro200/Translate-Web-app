@@ -1,229 +1,6 @@
 // Translation dictionary
 const translations = {
-    'hello': 'ආයුබෝවන්',
-    'good morning': 'සුභ උදෑසනක්',
-    'good afternoon': 'සුභ දවල්',
-    'good evening': 'සුභ සන්ධ්‍යාවක්',
-    'good night': 'සුභ රාත්‍රියක්',
-    'thank you': 'ස්තූතියි',
-    'please': 'කරුණාකර',
-    'sorry': 'සමාවන්න',
-    'how are you': 'ඔබට කොහොමද',
-    'i am fine': 'මම හොඳින්',
-    'what is your name': 'ඔබේ නම කුමක්ද',
-    'my name is': 'මගේ නම',
-    'goodbye': 'ආයුබෝවන්',
-    'yes': 'ඔව්',
-    'no': 'නැත',
-    'family': 'පවුල',
-    'friend': 'මිතුරා',
-    'home': 'ගෙදර',
-    'work': 'වැඩ',
-    'school': 'පාසල',
-    'food': 'ආහාර',
-    'water': 'ජලය',
-    'time': 'වේලාව',
-    'day': 'දවස',
-    'night': 'රාත්‍රිය',
-    'today': 'අද',
-    'tomorrow': 'හෙට',
-    'yesterday': 'ඊයේ',
-    'big': 'විශාල',
-    'small': 'කුඩා',
-    'hot': 'උණුසුම්',
-    'cold': 'සීතල',
-    'beautiful': 'සුන්දර',
-    'good': 'හොඳ',
-    'bad': 'නරක',
-    'happy': 'සතුටු',
-    'sad': 'දුක්ඛිත',
-    'new': 'අලුත්',
-    'old': 'පරණ',
-    'fast': 'වේගවත්',
-    'slow': 'මන්දගාමී',
-    'easy': 'පහසු',
-    'difficult': 'අපහසු',
-    'important': 'වැදගත්',
-    'right': 'හරි',
-    'wrong': 'වැරදි',
-    'open': 'විවෘත',
-    'close': 'වසන්න',
-    'start': 'ආරම්භ',
-    'stop': 'නවත්වන්න',
-    'first': 'පළමු',
-    'last': 'අවසාන',
-    'up': 'ඉහළ',
-    'down': 'පහළ',
-    'left': 'වම',
-    'right': 'දකුණ',
-    'here': 'මෙහි',
-    'there': 'එහි',
-    'now': 'දැන්',
-    'always': 'සැමවිට',
-    'never': 'කවදාවත්',
-    'sometimes': 'සමහර විට',
-    'all': 'සියල්ල',
-    'some': 'සමහර',
-    'many': 'බොහෝ',
-    'few': 'ස්වල්ප',
-    'more': 'තව',
-    'less': 'අඩු',
-    'same': 'එකම',
-    'different': 'වෙනස්',
-    'high': 'ඉහළ',
-    'low': 'අඩු',
-    'long': 'දිග',
-    'short': 'කෙටි',
-    'thick': 'තද',
-    'thin': 'සිහින්',
-    'heavy': 'බර',
-    'light': 'සැහැල්ලු',
-    'full': 'පිරී',
-    'empty': 'හිස්',
-    'clean': 'පිරිසිදු',
-    'dirty': 'අපිරිසිදු',
-    'wet': 'තෙත්',
-    'dry': 'වියළි',
-    'soft': 'මෘදු',
-    'hard': 'කටුක',
-    'bright': 'බැබළෙන',
-    'dark': 'අඳුරු',
-    'loud': 'ඝෝෂාකාරී',
-    'quiet': 'නිහඬ',
-    'sweet': 'මිහිරි',
-    'sour': 'පුළුස්සන',
-    'fresh': 'නැවුම්',
-    'warm': 'උණුසුම්',
-    'cool': 'සිසිල්',
-    'alive': 'ජීවතුන්',
-    'dead': 'මළ',
-    'healthy': 'සෞඛ්‍ය සම්පන්න',
-    'sick': 'අසනීප',
-    'safe': 'ආරක්ෂිත',
-    'dangerous': 'අනතුරුදායක',
-    'ready': 'සූදානම්',
-    'available': 'ලබාගත හැකි',
-    'public': 'මහජන',
-    'private': 'පෞද්ගලික',
-    'free': 'නිදහස්',
-    'busy': 'විශාල',
-    'excited': 'උද්දීපිත',
-    'interested': 'උනන්දු',
-    'surprised': 'පුදුම',
-    'worried': 'කරදර',
-    'relaxed': 'සන්සුන්',
-    'confident': 'ආත්ම විශ්වාසය',
-    'brave': 'ධෛර්‍යවත්',
-    'strong': 'ශක්තිමත්',
-    'weak': 'දුබල',
-    'tired': 'අවසාන',
-    'energetic': 'ශක්තිමත්',
-    'active': 'ක්‍රියාකාරී',
-    'creative': 'ආකෘතිමත්',
-    'intelligent': 'බුද්ධිමත්',
-    'smart': 'බුද්ධිමත්',
-    'expert': 'විශේෂඥ',
-    'beginner': 'ආරම්භක',
-    'basic': 'මූලික',
-    'simple': 'සරල',
-    'complex': 'සංකීර්ණ',
-    'interesting': 'උනන්දුව',
-    'fun': 'විනෝද',
-    'useful': 'ප්‍රයෝජනවත්',
-    'helpful': 'උපකාරී',
-    'secure': 'ආරක්ෂිත',
-    'hidden': 'සඟවා',
-    'secret': 'රහස්',
-    'locked': 'අගුළු',
-    'moving': 'චලනය',
-    'stationary': 'ස්ථාවර',
-    'quick': 'වේගවත්',
-    'gradual': 'ක්‍රමික',
-    'sudden': 'එදිරිව',
-    'early': 'ලබා',
-    'late': 'ප්‍රමාද',
-    'frequent': 'බොහෝ විට',
-    'rare': 'අඩු විට',
-    'regular': 'නිති',
-    'constant': 'නිරන්තර',
-    'temporary': 'තාවකාලික',
-    'permanent': 'ස්ථිර',
-    'flexible': 'සුවිශේෂී',
-    'rigid': 'කටුක',
-    'loose': 'ලිහිල්',
-    'tight': 'තද',
-    'smooth': 'මෘදු',
-    'rough': 'එළි',
-    'flat': 'පැතලි',
-    'curved': 'වක්‍ර',
-    'straight': 'සරල',
-    'round': 'වට',
-    'square': 'චතුරස්‍ර',
-    'symmetrical': 'සමමිතික',
-    'balanced': 'සමතුලිත',
-    'stable': 'ස්ථාවර',
-    'steady': 'ස්ථාවර',
-    'solid': 'ඝන',
-    'liquid': 'දියර',
-    'gas': 'වායු',
-    'boiling': 'උතුරන',
-    'freezing': 'අයිස්',
-    'growing': 'වර්ධනය',
-    'increasing': 'වැඩිවන',
-    'decreasing': 'අඩුවන',
-    'rising': 'ඉහළයන',
-    'falling': 'පහළයන',
-    'running': 'දුවන',
-    'walking': 'ඇවිදින',
-    'standing': 'නැගී සිටින',
-    'sitting': 'ඉඳගෙන',
-    'sleeping': 'නිදාගෙන',
-    'awake': 'අවදි',
-    'conscious': 'සංවේදී',
-    'living': 'ජීවත්',
-    'natural': 'ස්වාභාවික',
-    'real': 'සැබෑ',
-    'genuine': 'සැබෑ',
-    'original': 'මුල්',
-    'copy': 'පිටපත',
-    'example': 'උදාහරණය',
-    'situation': 'තත්වය',
-    'position': 'ස්ථානය',
-    'place': 'ස්ථානය',
-    'area': 'ප්‍රදේශය',
-    'city': 'නගරය',
-    'town': 'නගරය',
-    'village': 'ගම',
-    'country': 'රට',
-    'world': 'ලෝකය',
-    'sky': 'අහස',
-    'space': 'අවකාශය',
-    'air': 'ගුවන්',
-    'fire': 'ගින්න',
-    'wind': 'සුළඟ',
-    'rain': 'වැසි',
-    'snow': 'හිම',
-    'ice': 'අයිස්',
-    'dust': 'දූවිලි',
-    'sand': 'වැලි',
-    'stone': 'ගල',
-    'metal': 'ලෝහ',
-    'wood': 'ලී',
-    'plastic': 'ප්ලාස්ටික්',
-    'glass': 'වීදුරු',
-    'paper': 'කඩදාසි',
-    'cloth': 'රෙදි',
-    'gold': 'රන්',
-    'silver': 'රිදී',
-    'iron': 'යකඩ',
-    'steel': 'වානේ',
-    'carbon': 'කාබන්',
-    'oxygen': 'ඔක්සිජන්',
-    'water': 'ජලය',
-    'sun': 'සූර්‍යයා',
-    'moon': 'චන්ද්‍රයා',
-    'star': 'තරුව',
-    'earth': 'පෘථිවිය'
+
 };
 
 // Reverse dictionary for Sinhala to English
@@ -271,16 +48,52 @@ const testCustomSpeedBtn = document.getElementById('testCustomSpeedBtn');
 // Global state
 let voiceSpeed = 1;
 
-// Translation history
-let history = JSON.parse(localStorage.getItem('translationHistory')) || [];
+// Translation history - now loaded from cookies
+let history = []; 
+
+// --- LANGUAGES OBJECT (without "Detect Language") ---
+const LANGUAGES = {
+    "af": "Afrikaans", "sq": "Albanian", "am": "Amharic", "ar": "Arabic", "hy": "Armenian", "az": "Azerbaijani",
+    "eu": "Basque", "be": "Belarusian", "bn": "Bengali", "bs": "Bosnian", "bg": "Bulgarian", "ca": "Catalan", "ceb": "Cebuano", "ny": "Chichewa",
+    "zh-CN": "Chinese (Simplified)", "zh-TW": "Chinese (Traditional)", "co": "Corsican", "hr": "Croatian", "cs": "Czech", "da": "Danish",
+    "nl": "Dutch", "en": "English", "eo": "Esperanto", "et": "Estonian", "tl": "Filipino", "fi": "Finnish", "fr": "French", "fy": "Frisian",
+    "gl": "Galician", "ka": "Georgian", "de": "German", "el": "Greek", "gu": "Gujarati", "ht": "Haitian Creole", "ha": "Hausa", "haw": "Hawaiian",
+    "iw": "Hebrew", "he": "Hebrew", "hi": "Hindi", "hmn": "Hmong", "hu": "Hungarian", "is": "Icelandic", "ig": "Igbo", "id": "Indonesian",
+    "ga": "Irish", "it": "Italian", "ja": "Japanese", "jw": "Javanese", "kn": "Kannada", "kk": "Kazakh", "km": "Khmer", "rw": "Kinyarwanda",
+    "ko": "Korean", "ku": "Kurdish (Kurmanji)", "ky": "Kyrgyz", "lo": "Lao", "la": "Latin", "lv": "Latvian", "lt": "Lithuanian",
+    "lb": "Luxembourgish", "mk": "Macedonian", "mg": "Malagasy", "ms": "Malay", "ml": "Malayalam", "mt": "Maltese", "mi": "Maori",
+    "mr": "Marathi", "mn": "Mongolian", "my": "Myanmar (Burmese)", "ne": "Nepali", "no": "Norwegian", "or": "Odia (Oriya)", "ps": "Pashto",
+    "fa": "Persian", "pl": "Polish", "pt": "Portuguese", "pa": "Punjabi", "ro": "Romanian", "ru": "Russian", "sm": "Samoan", "gd": "Scots Gaelic",
+    "sr": "Serbian", "st": "Sesotho", "sn": "Shona", "sd": "Sindhi", "si": "Sinhala", "sk": "Slovak", "sl": "Slovenian", "so": "Somali",
+    "es": "Spanish", "su": "Sundanese", "sw": "Swahili", "sv": "Swedish", "tg": "Tajik", "ta": "Tamil", "tt": "Tatar", "te": "Telugu",
+    "th": "Thai", "tr": "Turkish", "tk": "Turkmen", "uk": "Ukrainian", "ur": "Urdu", "ug": "Uyghur", "uz": "Uzbek", "vi": "Vietnamese",
+    "cy": "Welsh", "xh": "Xhosa", "yi": "Yiddish", "yo": "Yoruba", "zu": "Zulu"
+};
 
 // Initialize the app
 function init() {
+    populateLanguageDropdowns();
     loadHistory();
     setupEventListeners();
     updateCharCounter(); // Set initial counter value
     loadSettings();
     sourceText.focus({ preventScroll: true });
+}
+
+// Populate Language Dropdowns
+function populateLanguageDropdowns() {
+    // Populate source language dropdown
+    for (const code in LANGUAGES) {
+        const option = document.createElement('option');
+        option.value = code;
+        option.textContent = LANGUAGES[code];
+        sourceLanguage.appendChild(option.cloneNode(true));
+        targetLanguage.appendChild(option);
+    }
+    
+    // Set default values
+    sourceLanguage.value = 'en';
+    targetLanguage.value = 'si';
 }
 
 // Setup event listeners
@@ -415,7 +228,7 @@ async function translate() {
         }
     } catch (error) {
         console.error('Translation Error:', error);
-        targetText.value = 'Error: Could not translate.';
+        targetText.value = error.message.startsWith('Error:') ? error.message : 'Error: Could not translate.';
     } finally {
         translateBtn.innerHTML = '<i class="fas fa-language"></i> Translate';
         translateBtn.disabled = false;
@@ -433,14 +246,15 @@ async function performTranslation(text, sourceLang, targetLang) {
         }
         const data = await response.json();
         
-        if (data.responseStatus !== 200) {
-            throw new Error(`API Error: ${data.responseDetails}`);
+        if (data.responseStatus !== 200 || !data.responseData) {
+            const errorMessage = `Error: ${data.responseDetails || 'Translation failed.'}`;
+            throw new Error(errorMessage);
         }
-
+        
         return data.responseData.translatedText;
     } catch (error) {
         console.error("API Fetch Error:", error);
-        return 'Error: Could not connect to the translation service.';
+        throw new Error('Error: Could not connect to the translation service.');
     }
 }
 
@@ -488,8 +302,9 @@ function copyTranslation() {
 // Text-to-speech
 function speakText(text, lang) {
     if ('speechSynthesis' in window && text) {
+        speechSynthesis.cancel(); // Cancel any previous speech
         const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = lang === 'si' ? 'si-LK' : 'en-US';
+        utterance.lang = lang; // Use the language code directly
         utterance.rate = voiceSpeed; // Use selected voice speed
         speechSynthesis.speak(utterance);
     }
@@ -513,7 +328,8 @@ function addToHistory(sourceText, targetText, sourceLang, targetLang) {
         history = history.slice(0, 50);
     }
     
-    localStorage.setItem('translationHistory', JSON.stringify(history));
+    // Save history to a cookie
+    setCookie('translationHistory', JSON.stringify(history), 30); // Saves for 30 days
     loadHistory();
 
     // Animate the new item
@@ -525,6 +341,9 @@ function addToHistory(sourceText, targetText, sourceLang, targetLang) {
 
 // Load and display history
 function loadHistory() {
+    const historyCookie = getCookie('translationHistory');
+    history = historyCookie ? JSON.parse(historyCookie) : [];
+    
     translationHistory.innerHTML = '';
     
     if (history.length === 0) {
@@ -537,7 +356,12 @@ function loadHistory() {
     history.forEach(item => {
         const historyItem = document.createElement('div');
         historyItem.className = 'history-item';
-        historyItem.innerHTML = `
+        
+        // Get full language names from codes
+        const sourceLangName = LANGUAGES[item.sourceLang] || 'Unknown';
+        const targetLangName = LANGUAGES[item.targetLang] || 'Unknown';
+        
+        historyItem.innerHTML = `            <div class="lang-pair">${sourceLangName} → ${targetLangName}</div>
             <div class="source-text">${item.sourceText}</div>
             <div class="target-text">${item.targetText}</div>
             <div class="timestamp">${item.timestamp}</div>
@@ -614,7 +438,7 @@ function updateCharCounter() {
 // Clear history
 function executeClearHistory() {
     history = [];
-    localStorage.removeItem('translationHistory');
+    eraseCookie('translationHistory'); // Erase the cookie
     loadHistory();
     confirmModal.style.display = 'none';
     showToastNotification('History cleared successfully!');
@@ -686,11 +510,37 @@ function testVoiceSpeed(speed, lang) {
     if ('speechSynthesis' in window) {
         speechSynthesis.cancel(); // Stop any currently playing speech
         const utterance = new SpeechSynthesisUtterance(testPhrase);
-        utterance.lang = lang === 'si' ? 'si-LK' : 'en-US';
+        utterance.lang = lang;
         utterance.rate = speed;
         speechSynthesis.speak(utterance);
     }
 }
 
+// --- COOKIE HELPER FUNCTIONS ---
+function setCookie(name, value, days) {
+    let expires = "";
+    if (days) {
+        const date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "")  + expires + "; path=/; SameSite=Lax";
+}
+
+function getCookie(name) {
+    const nameEQ = name + "=";
+    const ca = document.cookie.split(';');
+    for(let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
+}
+
+function eraseCookie(name) {   
+    document.cookie = name+'=; Max-Age=-99999999; path=/;';
+}
+
 // Initialize the app when DOM is loaded
-document.addEventListener('DOMContentLoaded', init); 
+document.addEventListener('DOMContentLoaded', init);
