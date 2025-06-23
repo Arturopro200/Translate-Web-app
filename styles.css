@@ -668,7 +668,7 @@ body.dark-mode .swap-btn i {
     gap: 10px;
 }
 
-.clear-btn, .copy-btn, .speak-btn {
+.clear-btn, .copy-btn, .speak-btn, .dictate-btn {
     background: transparent;
     border: none;
     border-radius: 50%;
@@ -682,7 +682,7 @@ body.dark-mode .swap-btn i {
     transition: all 0.2s ease;
 }
 
-.clear-btn:hover, .copy-btn:hover, .speak-btn:hover {
+.clear-btn:hover, .copy-btn:hover, .speak-btn:hover, .dictate-btn:hover {
     background-color: var(--button-secondary-bg);
     color: var(--text-color);
 }
@@ -690,6 +690,12 @@ body.dark-mode .swap-btn i {
 .copy-btn.success {
     color: #28a745; /* Green color for success */
     background-color: color-mix(in srgb, #28a745 15%, transparent);
+}
+
+.dictate-btn.listening {
+    color: #e74c3c; /* Red color for listening state */
+    background-color: color-mix(in srgb, #e74c3c 15%, transparent);
+    animation: pulse 1.5s infinite;
 }
 
 .action-buttons {
@@ -802,4 +808,16 @@ body.dark-mode .swap-btn i {
 
 body.dark-mode .history-item .timestamp {
     color: var(--text-light);
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 color-mix(in srgb, #e74c3c 40%, transparent);
+    }
+    70% {
+        box-shadow: 0 0 0 10px color-mix(in srgb, #e74c3c 0%, transparent);
+    }
+    100% {
+        box-shadow: 0 0 0 0 color-mix(in srgb, #e74c3c 0%, transparent);
+    }
 } 
