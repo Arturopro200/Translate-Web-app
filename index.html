@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Translate Web App - English ↔ Sinhala</title>
+    <title>Translate Web App</title>
+    <link rel="icon" href="./logo.png" type="png">
+
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,7 +16,7 @@
     <div class="container">
         <header>
             <h1><i class="fas fa-language"></i> Translate Web App</h1>
-            <p>English ↔ Sinhala Translation</p>
+            <!-- <p>English ↔ Sinhala Translation</p> -->
             <button id="settingsBtn" class="settings-btn" title="Settings">
                 <i class="fas fa-cog"></i>
             </button>
@@ -151,6 +153,15 @@
             </div>
         </div>
         <div class="settings-section">
+            <h4>Premium Features</h4>
+            <button id="unlockPremiumBtn" class="unlock-premium-btn">
+                <i class="fas fa-lock-open"></i> Unlock Premium
+            </button>
+            <button id="logoutPremiumBtn" class="logout-premium-btn hidden">
+                <i class="fas fa-sign-out-alt"></i> Logout from Premium
+            </button>
+        </div>
+        <div class="settings-section">
             <h4>Voice speed</h4>
             <div class="voice-speed-options">
                 <div class="voice-speed-option">
@@ -204,6 +215,20 @@
                     <i class="fas fa-play"></i>
                 </button>
             </div>
+        </div>
+    </div>
+
+    <!-- Activation Modal -->
+    <div id="activationModal" class="modal">
+        <div class="modal-content">
+            <span id="closeActivationModal" class="close-modal-span">&times;</span>
+            <h3>Unlock Premium Features</h3>
+            <p>Enter your activation key to unlock premium features like unlimited characters and voice dictation.</p>
+            <div class="activation-input-group">
+                <input type="password" id="activationKeyInput" placeholder="Enter Activation Key">
+                <button id="submitActivationKey" class="modal-button-primary">Activate</button>
+            </div>
+            <p id="activationError" class="activation-error-msg"></p>
         </div>
     </div>
 
