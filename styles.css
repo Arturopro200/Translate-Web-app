@@ -483,176 +483,166 @@ footer p {
 
 /* For smaller mobile devices */
 @media (max-width: 480px) {
+    /* Hide desktop panels on mobile */
+    .container, .translation-area, .output-section, .input-section, .text-area-container, .action-buttons, .history-section, .mic-fab, .bottom-nav, footer, .ad-banner {
+        display: none !important;
+    }
     body {
-        padding: 5px;
+        background: #181a1b !important;
+        color: #fff !important;
+        padding: 0 !important;
+        margin: 0 !important;
     }
-    .container {
-        padding: 8px 2px;
-        border-radius: 10px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        margin: 0;
-    }
-    header h1 {
-        font-size: 1.1rem;
-        margin-bottom: 4px;
-    }
-    .settings-btn {
-        font-size: 1.1rem;
-        top: -5px;
-        right: -5px;
-        padding: 6px;
-    }
-    .language-selector {
+    .gt-mobile {
+        display: flex !important;
         flex-direction: column;
-        gap: 6px;
-        margin-bottom: 10px;
+        align-items: center;
+        justify-content: flex-start;
+        background: #181a1b;
+        border-radius: 18px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+        padding: 24px 8px 32px 8px;
+        margin: 0 auto;
+        max-width: 98vw;
+        width: 100vw;
+        min-height: 100vh;
+        gap: 22px;
     }
-    .language-box label {
-        font-size: 0.95rem;
-    }
-    .language-box select {
-        font-size: 0.95rem;
-        padding: 8px;
-        border-radius: 6px;
-    }
-    .swap-btn {
-        width: 38px;
-        height: 38px;
-        margin: 0.3rem 0;
-    }
-    .translation-area {
-        grid-template-columns: 1fr;
-        gap: 0.7rem;
-    }
-    .text-area-container {
-        padding: 6px 4px 18px 4px;
-        border-radius: 8px;
-    }
-    .text-area-container textarea {
-        font-size: 0.95rem;
-        min-height: 90px;
-        padding: 10px 10px 25px 10px;
-        border-radius: 8px;
-    }
-    .char-counter {
-        left: 10px;
-        bottom: 7px;
-        font-size: 0.85rem;
-    }
-    .text-controls {
-        right: 4px;
-        top: 4px;
-        gap: 6px;
-    }
-    .clear-btn, .copy-btn, .speak-btn, .dictate-btn, .ai-voice-btn, .upload-file-btn, .download-pdf-btn, .download-txt-btn, .batch-translate-btn {
-        width: 28px;
-        height: 28px;
-        font-size: 1rem;
-    }
-    .action-buttons {
-        margin-top: 12px;
-    }
-    .translate-btn {
-        font-size: 1rem;
-        padding: 10px;
-        border-radius: 30px;
+    .gt-mobile header, .gt-mobile .header {
         width: 100%;
+        text-align: center;
+        font-size: 2rem;
+        font-weight: 800;
+        color: #fff;
+        margin-bottom: 8px;
+        letter-spacing: 0.5px;
+        padding-top: 10px;
     }
-    .history-section {
-        margin-top: 10px;
-        padding: 6px 2px 4px 2px;
-        border-radius: 8px;
-    }
-    .history-header h3 {
-        font-size: 1.05rem;
-    }
-    .clear-history-btn, .export-history-btn, .show-favorites-btn {
-        font-size: 0.85rem;
-        padding: 6px 10px;
-        border-radius: 6px;
-    }
-    .history-list {
-        max-height: 120px;
-        padding-right: 3px;
-    }
-    .history-item {
-        font-size: 0.95rem;
-        padding: 8px;
-        border-radius: 7px;
-        margin-bottom: 6px;
-    }
-    .modal-content {
-        width: 98vw;
-        max-width: 99vw;
-        padding: 10px 5px;
-        border-radius: 12px;
-    }
-    .modal-content h2, .modal-content h3 {
-        font-size: 1.1rem;
-    }
-    .modal-content p, .modal-content ul li {
-        font-size: 0.95rem;
-    }
-    .modal-close-button, .modal-button-secondary, .modal-button-danger, .modal-button-primary {
-        font-size: 0.95rem;
-        padding: 10px 18px;
-        border-radius: 7px;
-    }
-    .settings-panel {
-        width: 99vw;
-        min-width: unset;
-        right: 0;
-        left: 0;
-        border-radius: 12px;
-        padding: 10px 5px;
-        max-height: 95vh;
-        overflow-y: auto;
-    }
-    .settings-panel-header h3 {
-        font-size: 1rem;
-    }
-    .settings-section h4 {
-        font-size: 0.85rem;
+    .gt-mobile .gt-lang-row {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
         margin-bottom: 10px;
     }
-    .unlock-premium-btn, .logout-premium-btn {
-        font-size: 0.95rem;
-        padding: 10px;
-        border-radius: 7px;
-    }
-    .voice-speed-options label {
-        font-size: 0.95rem;
-    }
-    .custom-speed-control {
-        gap: 7px;
-    }
-    #customSpeedValue {
-        font-size: 0.9rem;
-        min-width: 30px;
-    }
-    .activation-input-group input {
-        font-size: 0.95rem;
-        padding: 8px;
-        border-radius: 6px;
-    }
-    .activation-input-group button {
-        font-size: 0.95rem;
-        padding: 8px 12px;
-        border-radius: 6px;
-    }
-    .activation-error-msg {
-        font-size: 0.85rem;
-    }
-    footer p {
-        font-size: 0.95rem;
-    }
-    .theme-toggle-btn {
-        width: 36px;
-        height: 20px;
+    .gt-mobile .gt-lang-select {
+        background: #23272a;
+        color: #fff;
+        border: none;
         border-radius: 14px;
+        font-size: 1.1rem;
+        padding: 12px 18px;
+        font-weight: 600;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        max-width: 44vw;
+        transition: border 0.2s;
     }
-    .sun-icon-wrapper, .moon-icon-wrapper {
-        font-size: 0.9rem;
+    .gt-mobile .gt-swap-btn {
+        background: #23272a;
+        color: #fff;
+        border: none;
+        border-radius: 50%;
+        width: 44px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        transition: border 0.2s, background 0.2s;
+    }
+    .gt-mobile .gt-swap-btn:active {
+        background: #7B4BFF;
+        color: #fff;
+    }
+    .gt-mobile .gt-input {
+        width: 100%;
+        max-width: 420px;
+        background: #23272a;
+        color: #fff;
+        border: none;
+        border-radius: 18px;
+        font-size: 1.2rem;
+        padding: 26px 16px;
+        margin-bottom: 0;
+        outline: none;
+        resize: none;
+        text-align: center;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.09);
+        font-family: inherit;
+        transition: border 0.2s;
+    }
+    .gt-mobile .gt-input:focus {
+        border: 2px solid #7B4BFF;
+    }
+    .gt-mobile .gt-translate-btn {
+        width: 100%;
+        max-width: 420px;
+        background: linear-gradient(135deg, #7B4BFF, #5d3dff);
+        color: #fff;
+        border: none;
+        border-radius: 100px;
+        padding: 18px 0;
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin-bottom: 0;
+        cursor: pointer;
+        box-shadow: 0 4px 18px rgba(123,75,255,0.13);
+        transition: background 0.2s, transform 0.2s;
+        letter-spacing: 0.5px;
+    }
+    .gt-mobile .gt-translate-btn:active {
+        background: #5d3dff;
+        transform: scale(0.98);
+    }
+    .gt-mobile .gt-result {
+        width: 100%;
+        max-width: 420px;
+        min-height: 60px;
+        background: #23272a;
+        color: #fff;
+        border-radius: 18px;
+        border: none;
+        font-size: 1.2rem;
+        padding: 26px 16px;
+        text-align: center;
+        margin-top: 0;
+        word-break: break-word;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.09);
+        font-family: inherit;
+        display: none;
+    }
+    .gt-mobile .gt-result.show {
+        display: block;
+    }
+    /* Bottom nav (optional) */
+    .gt-mobile .bottom-nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100vw;
+        background: #23272a;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        padding: 10px 0 6px 0;
+        border-top-left-radius: 18px;
+        border-top-right-radius: 18px;
+        box-shadow: 0 -2px 12px rgba(0,0,0,0.09);
+        z-index: 100;
+    }
+    .gt-mobile .bottom-nav button {
+        background: none;
+        border: none;
+        color: #fff;
+        font-size: 1.3rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+        cursor: pointer;
     }
 }
 
