@@ -513,11 +513,14 @@ function setupEventListeners() {
             }
             batchTranslateBtn.disabled = true;
             batchTranslateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            targetText.value = '';
             let results = [];
             for (let i = 0; i < lines.length; i++) {
                 try {
                     const translated = await performTranslation(lines[i], sourceLanguage.value, targetLanguage.value);
                     results.push(translated);
+                    // Add each line to history
+                    addToHistory(lines[i], translated, sourceLanguage.value, targetLanguage.value);
                 } catch (e) {
                     results.push('[Error]');
                 }
@@ -525,6 +528,7 @@ function setupEventListeners() {
             targetText.value = results.join('\n');
             batchTranslateBtn.innerHTML = '<i class="fas fa-layer-group"></i> Batch';
             batchTranslateBtn.disabled = false;
+            showToastNotification('Batch translation complete!');
         });
     }
 
